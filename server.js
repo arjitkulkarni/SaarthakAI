@@ -59,3 +59,45 @@ const SECURITY_HEADERS = {
   ].join('; '),
 };
 
+const stats = { startedAt: new Date().toISOString(), total: 0, scam: 0, suspicious: 0, safe: 0, gemini: 0, fallback: 0, categories: {} };
+const hits = new Map();
+
+/* ------------------------------------------------------------------ helpers */
+
+function loadDotEnv(file) {
+  try {
+    for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/i);
+      if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+    }
+  } catch { /* no .env file - fine on Cloud Run */ }
+}
+
+function log(severity, message, extra = {}) {
+  // Structured JSON logs are parsed automatically by Google Cloud Logging.
+  console.log(JSON.stringify({ severity, message, ...extra }));
+}
+
+function sendJson(res, status, obj) {
+  const body = JSON.stringify(obj);
+  res.writeHead(status, { ...SECURITY_HEADERS, 'Content-Type': MIME['.json'], 'Cache-Control': 'no-store' });
+  res.end(body);
+}
+
+function clientIp(req) {
+  const fwd = req.headers['x-forwarded-for'];
+  return (typeof fwd === 'string' && fwd.split(',')[0].trim()) || req.socket.remoteAddress || 'unknown';
+}
+
+function rateLimited(ip) {
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || now - entry.start > RATE_LIMIT.windowMs) {
+    hits.set(ip, { start: now, count: 1 });
+    if (hits.size > 5000) for (const [k, v] of hits) if (now - v.start > RATE_LIMIT.windowMs) hits.delete(k);
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > RATE_LIMIT.max;
+}
+
