@@ -1,0 +1,17 @@
+{
+  "name": "satark-ai",
+  "version": "1.0.0",
+  "description": "Satark AI - AI-Based Digital Arrest & Cyber Fraud Scam Detection System (Google Gemini API on Google Cloud Run)",
+  "main": "server.js",
+  "type": "commonjs",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
