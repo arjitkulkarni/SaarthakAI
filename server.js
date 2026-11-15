@@ -101,3 +101,44 @@ function rateLimited(ip) {
   return entry.count > RATE_LIMIT.max;
 }
 
+function readJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on('data', (c) => {
+      size += c.length;
+      if (size > MAX_BODY_BYTES) {
+        reject(Object.assign(new Error('Request too large (max ~5 MB image)'), { status: 413 }));
+        req.destroy();
+        return;
+      }
+      chunks.push(c);
+    });
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}'));
+      } catch {
+        reject(Object.assign(new Error('Invalid JSON body'), { status: 400 }));
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+function validateInput(body) {
+  const text = typeof body.text === 'string' ? body.text.trim() : '';
+  const language = Object.prototype.hasOwnProperty.call(LANGUAGES, body.language) ? body.language : 'en';
+  let image = null;
+  if (body.image && typeof body.image === 'object') {
+    const mimeType = String(body.image.mimeType || '').toLowerCase();
+    const data = String(body.image.data || '').replace(/^data:[^,]+,/, '');
+    if (!ALLOWED_IMAGE_TYPES.includes(mimeType)) throw Object.assign(new Error('Unsupported image type. Use PNG, JPG or WEBP.'), { status: 400 });
+    if (!/^[A-Za-z0-9+/=\s]+$/.test(data)) throw Object.assign(new Error('Image data must be base64'), { status: 400 });
+    image = { mimeType, data };
+  }
+  if (!text && !image) throw Object.assign(new Error('Paste a message or upload a screenshot to analyse.'), { status: 400 });
+  if (text.length > MAX_TEXT_CHARS) throw Object.assign(new Error(`Message is too long (max ${MAX_TEXT_CHARS} characters).`), { status: 400 });
+  if (text && !image && text.length < 8) throw Object.assign(new Error('Message is too short to analyse.'), { status: 400 });
+  return { text, image, language };
+}
+
