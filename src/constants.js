@@ -1,0 +1,36 @@
+'use strict';
+
+/** Scam categories the system can classify a message into. */
+const CATEGORIES = [
+  'DIGITAL_ARREST',
+  'COURIER_PARCEL',
+  'KYC_BANK_UPDATE',
+  'UPI_PAYMENT_FRAUD',
+  'INVESTMENT_TRADING',
+  'JOB_TASK_SCAM',
+  'LOTTERY_PRIZE',
+  'SEXTORTION',
+  'IMPERSONATION_FAMILY_FRIEND',
+  'LOAN_APP',
+  'UTILITY_BILL',
+  'CUSTOMER_CARE_FRAUD',
+  'PHISHING_LINK',
+  'OTHER_FRAUD',
+  'NOT_A_SCAM',
+];
+
+/** Psychological / technical manipulation tactics. */
+const TACTICS = [
+  'AUTHORITY_IMPERSONATION',
+  'FEAR_THREAT',
+  'URGENCY',
+  'ISOLATION_SECRECY',
+  'PAYMENT_DEMAND',
+  'PERSONAL_DATA_REQUEST',
+  'SUSPICIOUS_LINK',
+  'TOO_GOOD_TO_BE_TRUE',
+  'REMOTE_ACCESS',
+  'OTHER',
+];
+
+const VERDICTS = ['SCAM', 'SUSPICIOUS', 'LIKELY_SAFE'];
