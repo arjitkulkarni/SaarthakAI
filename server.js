@@ -155,3 +155,69 @@ function record(analysis, engine) {
 
 /* ----------------------------------------------------------------- handlers */
 
+async function handleAnalyze(req, res) {
+  const requestId = crypto.randomUUID();
+  if (rateLimited(clientIp(req))) {
+    return sendJson(res, 429, { error: 'Too many requests. Please wait a minute and try again.' });
+  }
+  let input;
+  try {
+    input = validateInput(await readJsonBody(req));
+  } catch (err) {
+    return sendJson(res, err.status || 400, { error: err.message });
+  }
+
+  // Layer 1: rule engine (always runs, instant, offline).
+  const rules = analyzeRules(input.text);
+
+  // Layer 2: Gemini (primary AI analysis). Falls back to rules if unavailable.
+  let analysis;
+  let engine = 'gemini';
+  let model = null;
+  let latencyMs = 0;
+  let notice = null;
+  try {
+    const out = await analyzeWithGemini(input);
+    analysis = out.analysis;
+    model = out.model;
+    latencyMs = out.latencyMs;
+  } catch (err) {
+    log('WARNING', 'Gemini unavailable, using rule engine', { requestId, error: err.message });
+    if (input.image && !input.text) {
+      return sendJson(res, 503, {
+        error: 'Screenshot analysis needs the Gemini API, which is not reachable right now. Paste the message text instead, or try again shortly.',
+      });
+    }
+    analysis = rulesToAnalysis(rules);
+    engine = 'rules';
+    notice = process.env.GEMINI_API_KEY
+      ? 'Gemini AI was unreachable, so this result comes from the offline rule engine.'
+      : 'Gemini API key not configured - showing the offline rule-engine result.';
+  }
+
+  record(analysis, engine);
+  log('INFO', 'analysis complete', {
+    requestId, engine, model, latencyMs, verdict: analysis.verdict, score: analysis.risk_score,
+    category: analysis.scam_category, hasImage: Boolean(input.image), textChars: input.text.length,
+  });
+
+  return sendJson(res, 200, {
+    requestId,
+    engine,
+    model,
+    latencyMs,
+    notice,
+    language: input.language,
+    analysis,
+    rule_check: {
+      score: rules.score,
+      verdict: rules.verdict,
+      category: rules.category,
+      signals: rules.signals.map(({ id, tactic, explanation }) => ({ id, tactic, explanation })),
+    },
+    indicators: rules.indicators,
+    helplines: HELPLINES,
+    analyzedAt: new Date().toISOString(),
+  });
+}
+
