@@ -115,3 +115,52 @@ const strList = (v, maxItems, maxLen = 300) =>
   (Array.isArray(v) ? v : []).map((x) => clampStr(x, maxLen)).filter(Boolean).slice(0, maxItems);
 
 /** Validate and normalise Gemini's JSON so the UI can always trust the shape. */
+function normalizeAnalysis(raw) {
+  if (!raw || typeof raw !== 'object') throw new GeminiError('Gemini returned an empty result');
+  let score = Number.parseInt(raw.risk_score, 10);
+  if (!Number.isFinite(score)) score = 0;
+  score = Math.max(0, Math.min(100, score));
+  const verdict = verdictFromScore(score); // keep verdict consistent with score
+  let category = CATEGORIES.includes(raw.scam_category) ? raw.scam_category : 'OTHER_FRAUD';
+  if (verdict === 'LIKELY_SAFE' && category !== 'NOT_A_SCAM' && score < 15) category = 'NOT_A_SCAM';
+  return {
+    verdict,
+    risk_score: score,
+    confidence: CONFIDENCE.includes(raw.confidence) ? raw.confidence : 'MEDIUM',
+    scam_category: category,
+    impersonated_entity: clampStr(raw.impersonated_entity, 120),
+    summary: clampStr(raw.summary, 900),
+    red_flags: (Array.isArray(raw.red_flags) ? raw.red_flags : []).slice(0, 6).map((f) => ({
+      evidence: clampStr(f && f.evidence, 300),
+      explanation: clampStr(f && f.explanation, 400),
+      tactic: TACTICS.includes(f && f.tactic) ? f.tactic : 'OTHER',
+    })).filter((f) => f.evidence || f.explanation),
+    recommended_actions: strList(raw.recommended_actions, 6),
+    do_not: strList(raw.do_not, 5),
+  };
+}
+
+function extractJson(responseBody) {
+  const candidate = responseBody && responseBody.candidates && responseBody.candidates[0];
+  if (!candidate) {
+    const reason = responseBody && responseBody.promptFeedback && responseBody.promptFeedback.blockReason;
+    throw new GeminiError(reason ? `Gemini blocked the request (${reason})` : 'Gemini returned no candidates');
+  }
+  const text = ((candidate.content && candidate.content.parts) || [])
+    .filter((p) => typeof p.text === 'string' && !p.thought)
+    .map((p) => p.text)
+    .join('');
+  if (!text) throw new GeminiError(`Gemini returned no text (finishReason: ${candidate.finishReason || 'unknown'})`);
+  const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    throw new GeminiError('Gemini returned invalid JSON');
+  }
+}
+
+/**
+ * Analyse content with Gemini. Tries the configured model first, then fallbacks
+ * if a model is unavailable (404) or overloaded (429/5xx).
+ * @returns {Promise<{analysis:object, model:string, latencyMs:number}>}
+ */
