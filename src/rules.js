@@ -42,3 +42,17 @@ const RULES = [
     re: /(press (?:\d|one|nine)|dial (?:\d) to (?:speak|connect)|ivr)/i,
     why: 'Automated IVR "press a key" call - often used to route victims to fake officers.' },
 
+  // ---- Payment / UPI ----
+  { id: 'pay', tactic: 'PAYMENT_DEMAND', category: null, weight: 12,
+    re: /((?:transfer|pay|send|deposit) (?:the )?(?:amount|money|rs\.?|₹|inr|fine|fee|penalty|charges|tax)|processing fee|registration fee|clearance (?:fee|charges)|pay (?:a )?(?:fine|penalty)|(?:make|do) (?:the )?payment)/i,
+    why: 'Demands a payment or fee.' },
+  { id: 'upipin', tactic: 'PAYMENT_DEMAND', category: 'UPI_PAYMENT_FRAUD', weight: 30,
+    re: /((?:enter|share|tell|type) (?:your )?(?:upi )?pin|scan (?:this |the )?qr(?: code)? to (?:receive|get)|(?:accept|approve) (?:the |my )?(?:collect |payment )?request[^.\n]{0,40}(?:receive|get|refund))/i,
+    why: 'UPI trick: you never need to enter a PIN, scan a QR code or accept a request to RECEIVE money.' },
+  { id: 'mistake', tactic: 'URGENCY', category: 'UPI_PAYMENT_FRAUD', weight: 14,
+    re: /(sent (?:to you |to your (?:number|account) )?by mistake|by mistake|wrongly (?:sent|transferred)|return (?:the |my )?(?:money|amount))/i,
+    why: '"Sent by mistake" story - check your own bank app; the money usually never arrived.' },
+  { id: 'otp', tactic: 'PERSONAL_DATA_REQUEST', category: 'KYC_BANK_UPDATE', weight: 16,
+    re: /((?:share|send|tell|provide|give|forward)[^.\n]{0,25}\b(?:otp|cvv|pin|password|card (?:number|details))\b|\b(?:otp|cvv)\b[^.\n]{0,25}(?:share|send|tell|provide|give))/i,
+    why: 'Asks for OTP / PIN / CVV / password. Banks never ask for these.' },
+
