@@ -51,3 +51,20 @@ A/c No: 50100234567812  IFSC: XYZB0001234  Name: RBI Fund Verification Cell`,
     expected: 'SCAM',
     text: `Sir I have sent Rs 5,000 to your number by mistake, it was for my mother's hospital bill. Please return the money, I am sending a collect request now, just accept and enter your UPI PIN to receive the refund. ramesh.k21@okpay`,
   },
+  {
+    id: 'safe-delivery',
+    title: 'Genuine delivery update',
+    tag: 'Genuine',
+    expected: 'LIKELY_SAFE',
+    text: `Your order #40213 for "Wireless Mouse" has been delivered. Thank you for shopping with us. Rate your experience in the app.`,
+  },
+  {
+    id: 'safe-family',
+    title: 'Normal family message',
+    tag: 'Genuine',
+    expected: 'LIKELY_SAFE',
+    text: `Hi beta, reached Mysuru safely. Grandma is asking when you will visit. Call me after your college exams are over. Take care and eat properly!`,
+  },
+];
+
+module.exports = { SAMPLES };
