@@ -107,3 +107,32 @@ const COMBOS = [
   { needs: ['FEAR_THREAT', 'PAYMENT_DEMAND'], bonus: 10,
     why: 'Threat followed by a payment demand is extortion.' },
 ];
+
+function snippet(text, index, length) {
+  const start = Math.max(0, index - 35);
+  const end = Math.min(text.length, index + length + 35);
+  let s = text.slice(start, end).replace(/\s+/g, ' ').trim();
+  if (start > 0) s = '…' + s;
+  if (end < text.length) s = s + '…';
+  return s;
+}
+
+/** Extract actionable indicators (useful when filing a complaint). */
+function extractIndicators(text) {
+  const uniq = (arr) => [...new Set(arr.map((x) => x.trim()))].slice(0, 10);
+  const urls = text.match(/\b(?:https?:\/\/|www\.)[^\s<>"')]+|\b[a-z0-9-]+\.(?:xyz|top|club|online|site|buzz|icu|live|info|shop|click|link|vip|cc|tk|in|com|net|org)\/[^\s<>"')]*/gi) || [];
+  const phones = (text.match(/(?:\+91[\s-]?|\b0)?[6-9]\d{4}[\s-]?\d{5}\b/g) || []).filter((p) => p.replace(/\D/g, '').length >= 10);
+  const upi = (text.match(/\b[a-z0-9._-]{2,}@[a-z]{2,}\b(?![.@])/gi) || []);
+  const emails = text.match(/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}\b/gi) || [];
+  const amounts = text.match(/(?:₹|rs\.?|inr)\s?\d[\d,]*(?:\.\d+)?(?:\s?(?:lakh|lakhs|crore|k))?/gi) || [];
+  const accounts = (text.match(/\b(?:a\/c|acct|account)(?:\s*(?:no|number|num)\.?)?[:\s#.-]*\d{9,18}\b/gi) || []);
+  return {
+    urls: uniq(urls),
+    phone_numbers: uniq(phones),
+    upi_ids: uniq(upi),
+    emails: uniq(emails),
+    amounts: uniq(amounts),
+    bank_accounts: uniq(accounts),
+  };
+}
+
