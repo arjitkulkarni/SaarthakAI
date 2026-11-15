@@ -49,3 +49,41 @@ RULES:
 7. If the input is empty, unreadable, or not a message at all, return LIKELY_SAFE, risk_score 0, confidence LOW,
    and explain in the summary.`;
 
+const RESPONSE_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    verdict: { type: 'STRING', enum: VERDICTS },
+    risk_score: { type: 'INTEGER', description: '0 (safe) to 100 (certain scam)' },
+    confidence: { type: 'STRING', enum: CONFIDENCE },
+    scam_category: { type: 'STRING', enum: CATEGORIES },
+    impersonated_entity: { type: 'STRING' },
+    summary: { type: 'STRING', description: '2-3 sentence plain-language explanation for a non-technical person' },
+    red_flags: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          evidence: { type: 'STRING' },
+          explanation: { type: 'STRING' },
+          tactic: { type: 'STRING', enum: TACTICS },
+        },
+        required: ['evidence', 'explanation', 'tactic'],
+      },
+    },
+    recommended_actions: { type: 'ARRAY', items: { type: 'STRING' } },
+    do_not: { type: 'ARRAY', items: { type: 'STRING' } },
+  },
+  required: ['verdict', 'risk_score', 'confidence', 'scam_category', 'impersonated_entity', 'summary',
+    'red_flags', 'recommended_actions', 'do_not'],
+  propertyOrdering: ['verdict', 'risk_score', 'confidence', 'scam_category', 'impersonated_entity', 'summary',
+    'red_flags', 'recommended_actions', 'do_not'],
+};
+
+class GeminiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = 'GeminiError';
+    this.status = status;
+  }
+}
+
