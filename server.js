@@ -142,3 +142,16 @@ function validateInput(body) {
   return { text, image, language };
 }
 
+function record(analysis, engine) {
+  stats.total += 1;
+  if (analysis.verdict === 'SCAM') stats.scam += 1;
+  else if (analysis.verdict === 'SUSPICIOUS') stats.suspicious += 1;
+  else stats.safe += 1;
+  stats[engine === 'gemini' ? 'gemini' : 'fallback'] += 1;
+  if (analysis.scam_category !== 'NOT_A_SCAM') {
+    stats.categories[analysis.scam_category] = (stats.categories[analysis.scam_category] || 0) + 1;
+  }
+}
+
+/* ----------------------------------------------------------------- handlers */
+
