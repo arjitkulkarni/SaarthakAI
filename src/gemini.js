@@ -164,3 +164,52 @@ function extractJson(responseBody) {
  * if a model is unavailable (404) or overloaded (429/5xx).
  * @returns {Promise<{analysis:object, model:string, latencyMs:number}>}
  */
+async function analyzeWithGemini({ text, image, language }, opts = {}) {
+  const apiKey = opts.apiKey || process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new GeminiError('GEMINI_API_KEY is not configured', 0);
+  const fetchImpl = opts.fetch || globalThis.fetch;
+  const primary = opts.model || process.env.GEMINI_MODEL || DEFAULT_MODEL;
+  const models = [primary, ...FALLBACK_MODELS.filter((m) => m !== primary)];
+  const body = JSON.stringify(buildRequest({ text, image, language }));
+
+  const deadline = Date.now() + (opts.totalBudgetMs || TOTAL_BUDGET_MS);
+  let lastErr;
+  // Two passes over the model list: overload errors (429/5xx) are usually brief spikes.
+  const attempts = [...models, ...models];
+  for (let i = 0; i < attempts.length; i += 1) {
+    const model = attempts[i];
+    if (i === models.length) {
+      if (!lastErr || ![429, 500, 502, 503, 504].includes(lastErr.status)) break;
+      if (deadline - Date.now() < 6000) break;
+      await new Promise((r) => setTimeout(r, opts.retryDelayMs ?? 2000));
+    }
+    const started = Date.now();
+    const remaining = deadline - started;
+    if (remaining < 3000) break; // not enough time left for another attempt
+    try {
+      const res = await fetchImpl(`${API_BASE}/${encodeURIComponent(model)}:generateContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+        body,
+        signal: AbortSignal.timeout(Math.min(opts.timeoutMs || TIMEOUT_MS, remaining)),
+      });
+      if (!res.ok) {
+        let detail = '';
+        try { detail = ((await res.json()).error || {}).message || ''; } catch { /* ignore */ }
+        const err = new GeminiError(`Gemini API ${res.status}${detail ? ': ' + detail.slice(0, 200) : ''}`, res.status);
+        // Bad key / bad request will fail on every model - stop early.
+        if (res.status === 400 || res.status === 401 || res.status === 403) throw err;
+        lastErr = err;
+        continue;
+      }
+      const analysis = normalizeAnalysis(extractJson(await res.json()));
+      return { analysis, model, latencyMs: Date.now() - started };
+    } catch (err) {
+      if (err instanceof GeminiError && [400, 401, 403].includes(err.status)) throw err;
+      lastErr = err instanceof GeminiError ? err : new GeminiError(err.name === 'TimeoutError' ? 'Gemini request timed out' : `Gemini request failed: ${err.message}`);
+    }
+  }
+  throw lastErr || new GeminiError('Gemini request failed');
+}
+
+module.exports = { analyzeWithGemini, normalizeAnalysis, buildRequest, extractJson, GeminiError, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION, DEFAULT_MODEL };
