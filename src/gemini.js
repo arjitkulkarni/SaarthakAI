@@ -87,3 +87,31 @@ class GeminiError extends Error {
   }
 }
 
+function buildRequest({ text, image, language }) {
+  const langName = LANGUAGES[language] || LANGUAGES.en;
+  const parts = [];
+  parts.push({
+    text: `Write summary, red_flags.explanation, recommended_actions and do_not in ${langName}. ` +
+      'Keep enum values and red_flags.evidence exactly as specified.\n\n' +
+      (text ? `CONTENT RECEIVED BY THE USER (analyse this):\n"""\n${text}\n"""` : 'The user uploaded a screenshot only. Read all visible text in it and analyse it.'),
+  });
+  if (image) {
+    parts.push({ inline_data: { mime_type: image.mimeType, data: image.data } });
+  }
+  return {
+    systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+    contents: [{ role: 'user', parts }],
+    generationConfig: {
+      temperature: 0.2,
+      maxOutputTokens: 8192,
+      responseMimeType: 'application/json',
+      responseSchema: RESPONSE_SCHEMA,
+    },
+  };
+}
+
+const clampStr = (v, max = 600) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+const strList = (v, maxItems, maxLen = 300) =>
+  (Array.isArray(v) ? v : []).map((x) => clampStr(x, maxLen)).filter(Boolean).slice(0, maxItems);
+
+/** Validate and normalise Gemini's JSON so the UI can always trust the shape. */
