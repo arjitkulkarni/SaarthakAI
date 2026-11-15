@@ -56,3 +56,25 @@ const RULES = [
     re: /((?:share|send|tell|provide|give|forward)[^.\n]{0,25}\b(?:otp|cvv|pin|password|card (?:number|details))\b|\b(?:otp|cvv)\b[^.\n]{0,25}(?:share|send|tell|provide|give))/i,
     why: 'Asks for OTP / PIN / CVV / password. Banks never ask for these.' },
 
+  // ---- KYC / bank / utility ----
+  { id: 'blocked', tactic: 'URGENCY', category: 'KYC_BANK_UPDATE', weight: 14,
+    re: /((?:account|card|sim|number|wallet|yono|net ?banking)[^.\n]{0,40}(?:will be |has been |is |be )(?:blocked|suspended|deactivated|frozen|closed|disconnected)|kyc[^.\n]{0,30}(?:expired|pending|update|incomplete|suspended)|update (?:your )?(?:kyc|pan))/i,
+    why: 'Threatens to block your account / SIM unless you act now.' },
+  { id: 'power', tactic: 'FEAR_THREAT', category: 'UTILITY_BILL', weight: 30,
+    re: /((?:electricity|power|bijli|gas)[^.\n]{0,60}(?:disconnect|cut|cut off|discontinue)|(?:previous month|last month) bill (?:was )?not (?:updated|paid))/i,
+    why: 'Threatens electricity / utility disconnection tonight - a well-known fraud SMS pattern.' },
+  { id: 'deadline', tactic: 'URGENCY', category: null, weight: 10,
+    re: /(immediately|urgent(?:ly)?|within (?:\d+|one|two|24) (?:hours?|hrs|minutes?|mins)|today itself|tonight|(?:at|by) \d{1,2}(?::\d{2})? ?(?:pm|am)|last (?:chance|warning|reminder)|turant|तुरंत|act now|right now|failing which)/i,
+    why: 'Creates artificial urgency so you do not stop and verify.' },
+  { id: 'callback', tactic: 'URGENCY', category: null, weight: 10,
+    re: /((?:contact|call|whatsapp|reach) (?:our |the |this |immediately )?(?:[a-z]+ ){0,2}(?:officer|executive|agent|helpline|number)\b[^.\n]{0,25}\d{2}[\dX]{3,})/i,
+    why: 'Asks you to call back a personal mobile number instead of an official helpline.' },
+  { id: 'remote', tactic: 'REMOTE_ACCESS', category: 'CUSTOMER_CARE_FRAUD', weight: 22,
+    re: /(anydesk|teamviewer|quick ?support|rustdesk|airdroid|screen ?shar(?:e|ing)|install (?:this |the )?(?:app|apk)|download (?:this |the )?(?:app|apk)|\.apk\b)/i,
+    why: 'Asks you to install a remote-access / unknown app that lets scammers control your phone.' },
+
+  // ---- Links ----
+  { id: 'shortlink', tactic: 'SUSPICIOUS_LINK', category: 'PHISHING_LINK', weight: 14,
+    re: /(bit\.ly|tinyurl|cutt\.ly|is\.gd|t\.ly|rb\.gy|shorturl|\b[a-z0-9-]+\.(?:xyz|top|club|online|site|buzz|icu|live|info|shop|click|link|vip|cc|tk)\b(?:\/\S*)?)/i,
+    why: 'Contains a shortened or suspicious-domain link (possible phishing site).' },
+
