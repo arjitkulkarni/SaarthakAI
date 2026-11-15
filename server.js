@@ -244,3 +244,45 @@ function serveStatic(req, res, pathname) {
   });
 }
 
+const server = http.createServer(async (req, res) => {
+  const { pathname } = new URL(req.url, 'http://localhost');
+  try {
+    if (pathname === '/api/analyze') {
+      if (req.method !== 'POST') return sendJson(res, 405, { error: 'Use POST' });
+      return await handleAnalyze(req, res);
+    }
+    if (pathname === '/api/health') {
+      return sendJson(res, 200, {
+        status: 'ok',
+        service: 'satark-ai',
+        geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
+        model: process.env.GEMINI_MODEL || DEFAULT_MODEL,
+        region: process.env.CLOUD_RUN_REGION || null,
+        revision: process.env.K_REVISION || 'local',
+        uptimeSec: Math.round(process.uptime()),
+      });
+    }
+    if (pathname === '/api/samples') return sendJson(res, 200, { samples: SAMPLES });
+    if (pathname === '/api/stats') return sendJson(res, 200, stats);
+    if (pathname.startsWith('/api/')) return sendJson(res, 404, { error: 'Not found' });
+    if (req.method !== 'GET' && req.method !== 'HEAD') return sendJson(res, 405, { error: 'Method not allowed' });
+    return serveStatic(req, res, pathname);
+  } catch (err) {
+    log('ERROR', 'unhandled error', { error: err.stack || String(err) });
+    if (!res.headersSent) sendJson(res, 500, { error: 'Internal server error' });
+  }
+});
+
+if (require.main === module) {
+  server.listen(PORT, () => {
+    log('INFO', `Satark AI listening on http://localhost:${PORT}`, {
+      geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
+      model: process.env.GEMINI_MODEL || DEFAULT_MODEL,
+    });
+  });
+  const shutdown = () => server.close(() => process.exit(0));
+  process.on('SIGTERM', shutdown); // Cloud Run sends SIGTERM before stopping an instance
+  process.on('SIGINT', shutdown);
+}
+
+module.exports = { server, validateInput };
