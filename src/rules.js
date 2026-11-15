@@ -180,3 +180,63 @@ const DO_NOT = [
  * Analyse text with the rule engine.
  * @returns {{score:number, verdict:string, category:string, signals:Array, indicators:object}}
  */
+function analyzeRules(rawText) {
+  const text = String(rawText || '');
+  const signals = [];
+  const tactics = new Set();
+  const catWeights = {};
+  let score = 0;
+
+  for (const rule of RULES) {
+    const m = rule.re.exec(text);
+    if (!m) continue;
+    score += rule.weight;
+    tactics.add(rule.tactic);
+    if (rule.category) catWeights[rule.category] = (catWeights[rule.category] || 0) + rule.weight;
+    signals.push({
+      id: rule.id,
+      tactic: rule.tactic,
+      evidence: snippet(text, m.index, m[0].length),
+      explanation: rule.why,
+      weight: rule.weight,
+    });
+  }
+
+  for (const combo of COMBOS) {
+    if (combo.needs.every((t) => tactics.has(t))) score += combo.bonus;
+  }
+
+  score = Math.max(0, Math.min(100, score));
+  const verdict = verdictFromScore(score);
+
+  let category = 'NOT_A_SCAM';
+  if (verdict !== 'LIKELY_SAFE') {
+    const best = Object.entries(catWeights).sort((a, b) => b[1] - a[1])[0];
+    category = best ? best[0] : 'OTHER_FRAUD';
+  }
+
+  return { score, verdict, category, signals, tactics: [...tactics], indicators: extractIndicators(text) };
+}
+
+/** Build a full analysis object (same shape as the Gemini result) from rule output. */
+function rulesToAnalysis(rules) {
+  const isSafe = rules.verdict === 'LIKELY_SAFE';
+  const actions = isSafe ? ACTIONS.SAFE : (ACTIONS[rules.category] || ACTIONS.DEFAULT);
+  const n = rules.signals.length;
+  return {
+    verdict: rules.verdict,
+    risk_score: rules.score,
+    confidence: isSafe ? 'MEDIUM' : n >= 4 ? 'HIGH' : n >= 2 ? 'MEDIUM' : 'LOW',
+    scam_category: rules.category,
+    impersonated_entity: '',
+    summary: isSafe
+      ? 'The offline rule engine did not find strong scam patterns in this message.'
+      : `The offline rule engine found ${n} scam signal${n === 1 ? '' : 's'} matching known Indian cyber-fraud patterns.`,
+    red_flags: [...rules.signals].sort((a, b) => b.weight - a.weight).slice(0, 6)
+      .map((s) => ({ evidence: s.evidence, explanation: s.explanation, tactic: s.tactic })),
+    recommended_actions: actions,
+    do_not: isSafe ? [] : DO_NOT,
+  };
+}
+
+module.exports = { analyzeRules, rulesToAnalysis, extractIndicators, RULES };
