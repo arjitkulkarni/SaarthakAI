@@ -78,3 +78,32 @@ const RULES = [
     re: /(bit\.ly|tinyurl|cutt\.ly|is\.gd|t\.ly|rb\.gy|shorturl|\b[a-z0-9-]+\.(?:xyz|top|club|online|site|buzz|icu|live|info|shop|click|link|vip|cc|tk)\b(?:\/\S*)?)/i,
     why: 'Contains a shortened or suspicious-domain link (possible phishing site).' },
 
+  // ---- Too good to be true ----
+  { id: 'job', tactic: 'TOO_GOOD_TO_BE_TRUE', category: 'JOB_TASK_SCAM', weight: 22,
+    re: /(part[- ]time (?:job|work)|work from home[^.\n]{0,40}(?:earn|daily|income)|earn (?:rs\.?|₹|inr)?\s?[\d,]+ ?(?:\/|per|a)? ?(?:day|daily)|(?:like|rate|review|subscribe)[^.\n]{0,30}(?:videos?|hotels?|products?|channels?)[^.\n]{0,40}(?:earn|paid|commission)|prepaid task|telegram (?:task|group))/i,
+    why: 'Easy money for simple online tasks - classic job / task scam.' },
+  { id: 'invest', tactic: 'TOO_GOOD_TO_BE_TRUE', category: 'INVESTMENT_TRADING', weight: 16,
+    re: /(guaranteed (?:returns?|profit)|(?:double|triple) your (?:money|investment)|\d{2,3}% (?:returns?|profit)|ipo allotment|stock tips|vip (?:trading )?group|institutional account|crypto (?:investment|trading) (?:platform|group)|risk[- ]free (?:profit|returns?))/i,
+    why: 'Promises guaranteed / unrealistic investment returns.' },
+  { id: 'lottery', tactic: 'TOO_GOOD_TO_BE_TRUE', category: 'LOTTERY_PRIZE', weight: 18,
+    re: /((?:you have |you'?ve )?won (?:a |the )?(?:lottery|prize|lucky draw|car|iphone|cash)|lucky draw|kbc lottery|lottery (?:winner|prize)|claim (?:your )?(?:prize|reward|gift))/i,
+    why: 'Claims you won a lottery / prize you never entered.' },
+  { id: 'loan', tactic: 'TOO_GOOD_TO_BE_TRUE', category: 'LOAN_APP', weight: 14,
+    re: /(instant loan[^.\n]{0,40}(?:without|no) (?:documents|cibil|verification)|pre[- ]?approved loan[^.\n]{0,40}(?:fee|charge|pay))/i,
+    why: 'Instant loan that needs an upfront fee - typical loan-app fraud.' },
+  { id: 'sextortion', tactic: 'FEAR_THREAT', category: 'SEXTORTION', weight: 24,
+    re: /((?:obscene|nude|private|morphed|intimate) (?:video|photo|pictures?|clip)[^.\n]{0,60}(?:viral|upload|share|send|leak)|(?:viral|leak|upload)[^.\n]{0,40}(?:obscene|nude|private|morphed) (?:video|photo))/i,
+    why: 'Threatens to leak private / morphed content - sextortion. Do not pay; report immediately.' },
+  { id: 'family', tactic: 'URGENCY', category: 'IMPERSONATION_FAMILY_FRIEND', weight: 14,
+    re: /((?:this is|it'?s) (?:your )?(?:son|daughter|beta|nephew|friend)[^.\n]{0,60}(?:new number|lost (?:my )?phone|accident|hospital|urgent)|(?:new number|lost (?:my )?phone)[^.\n]{0,60}(?:send|need|transfer) (?:money|rs|₹))/i,
+    why: 'Pretends to be a family member / friend in an emergency asking for money.' },
+];
+
+const COMBOS = [
+  { needs: ['AUTHORITY_IMPERSONATION', 'PAYMENT_DEMAND'], bonus: 15,
+    why: 'An "officer" asking for money is never legitimate.' },
+  { needs: ['AUTHORITY_IMPERSONATION', 'ISOLATION_SECRECY'], bonus: 15,
+    why: 'An "officer" telling you to stay isolated on a call matches the digital-arrest pattern.' },
+  { needs: ['FEAR_THREAT', 'PAYMENT_DEMAND'], bonus: 10,
+    why: 'Threat followed by a payment demand is extortion.' },
+];
