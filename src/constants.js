@@ -34,3 +34,26 @@ const TACTICS = [
 ];
 
 const VERDICTS = ['SCAM', 'SUSPICIOUS', 'LIKELY_SAFE'];
+const CONFIDENCE = ['HIGH', 'MEDIUM', 'LOW'];
+
+const LANGUAGES = {
+  en: 'English',
+  hi: 'Hindi (Devanagari script)',
+  kn: 'Kannada (Kannada script)',
+};
+
+/** Official Indian reporting channels shown with every result. */
+const HELPLINES = [
+  { label: 'National Cyber Crime Helpline', value: '1930', href: 'tel:1930' },
+  { label: 'Report online', value: 'cybercrime.gov.in', href: 'https://cybercrime.gov.in' },
+  { label: 'Report fraud calls / SMS (Chakshu)', value: 'sancharsaathi.gov.in', href: 'https://sancharsaathi.gov.in' },
+];
+
+/** Verdict thresholds applied to the 0-100 risk score. */
+function verdictFromScore(score) {
+  if (score >= 60) return 'SCAM';
+  if (score >= 30) return 'SUSPICIOUS';
+  return 'LIKELY_SAFE';
+}
+
+module.exports = { CATEGORIES, TACTICS, VERDICTS, CONFIDENCE, LANGUAGES, HELPLINES, verdictFromScore };
