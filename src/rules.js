@@ -34,3 +34,11 @@ const RULES = [
     re: /(aadhaar|aadhar|pan card|\bpan\b(?! india)|passport (?:number|details)|sim (?:card )?(?:is )?(?:registered|issued|linked))/i,
     why: 'Mentions your identity documents (Aadhaar / PAN / SIM) to sound official.' },
 
+  // ---- Courier / parcel ----
+  { id: 'parcel', tactic: 'FEAR_THREAT', category: 'COURIER_PARCEL', weight: 16,
+    re: /((?:parcel|package|courier|consignment|shipment)[^.\n]{0,80}(?:seized|illegal|drugs|mdma|narcotic|passports?|contraband|returned|held|customs)|(?:seized|illegal|drugs|mdma)[^.\n]{0,60}(?:parcel|package|courier|consignment))/i,
+    why: 'Claims a parcel in your name contains drugs / illegal items - a common opening for digital-arrest scams.' },
+  { id: 'press9', tactic: 'URGENCY', category: 'COURIER_PARCEL', weight: 10,
+    re: /(press (?:\d|one|nine)|dial (?:\d) to (?:speak|connect)|ivr)/i,
+    why: 'Automated IVR "press a key" call - often used to route victims to fake officers.' },
+
