@@ -221,3 +221,26 @@ async function handleAnalyze(req, res) {
   });
 }
 
+function serveStatic(req, res, pathname) {
+  let rel = decodeURIComponent(pathname);
+  if (rel === '/' || rel === '') rel = '/index.html';
+  const file = path.normalize(path.join(PUBLIC_DIR, rel));
+  if (!file.startsWith(PUBLIC_DIR + path.sep)) {
+    res.writeHead(403, SECURITY_HEADERS);
+    return res.end('Forbidden');
+  }
+  fs.readFile(file, (err, data) => {
+    if (err) {
+      res.writeHead(404, { ...SECURITY_HEADERS, 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end('Not found');
+    }
+    const ext = path.extname(file).toLowerCase();
+    res.writeHead(200, {
+      ...SECURITY_HEADERS,
+      'Content-Type': MIME[ext] || 'application/octet-stream',
+      'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=3600',
+    });
+    res.end(req.method === 'HEAD' ? undefined : data);
+  });
+}
+
