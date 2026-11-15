@@ -136,3 +136,47 @@ function extractIndicators(text) {
   };
 }
 
+const ACTIONS = {
+  DIGITAL_ARREST: [
+    'Disconnect the call immediately. "Digital arrest" does not exist in Indian law - no police, CBI, ED, RBI or court arrests anyone over a video call.',
+    'Do not transfer any money. No agency has a "safe" or "verification" account.',
+    'Tell a family member right now - scammers depend on you staying isolated.',
+    'Call 1930 or report at cybercrime.gov.in. If you already paid, call 1930 within the first hour (golden hour) to freeze the money.',
+  ],
+  COURIER_PARCEL: [
+    'Hang up. Courier companies do not connect you to police over IVR.',
+    'Track parcels only on the official courier website you used yourself.',
+    'Report the number on Sanchar Saathi (Chakshu) and at cybercrime.gov.in.',
+  ],
+  KYC_BANK_UPDATE: [
+    'Do not click the link or call the number in the message.',
+    'Contact your bank only through the number printed on your card or the official app.',
+    'Never share OTP, PIN, CVV or passwords with anyone.',
+  ],
+  UPI_PAYMENT_FRAUD: [
+    'Remember: you never enter a UPI PIN or scan a QR code to RECEIVE money.',
+    'Decline unknown collect requests and verify "sent by mistake" claims in your own bank app.',
+    'Report on 1930 / cybercrime.gov.in.',
+  ],
+  DEFAULT: [
+    'Do not reply, click links, install apps or make any payment.',
+    'Verify independently using an official website or phone number you find yourself.',
+    'Report it: call 1930, file at cybercrime.gov.in, and flag the number on Sanchar Saathi (Chakshu).',
+  ],
+  SAFE: [
+    'No strong scam signals were found, but stay alert.',
+    'If anyone later asks for money, OTP or secrecy, treat it as a scam and verify independently.',
+  ],
+};
+
+const DO_NOT = [
+  'Do not share OTP, UPI PIN, CVV or passwords.',
+  'Do not install apps like AnyDesk / TeamViewer on a caller\'s request.',
+  'Do not transfer money to "verify" or "clear" your name.',
+  'Do not stay on a video call with someone claiming to be police.',
+];
+
+/**
+ * Analyse text with the rule engine.
+ * @returns {{score:number, verdict:string, category:string, signals:Array, indicators:object}}
+ */
