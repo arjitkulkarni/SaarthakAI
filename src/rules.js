@@ -4,8 +4,8 @@
  * Layer 1 - Rule-based scam signal engine.
  *
  * Runs instantly on every request (no network). Its signals are shown next to the
- * Gemini result as an independent cross-check, and it becomes the fallback
- * classifier if the Gemini API is unreachable, so the system never fails silently.
+ * Grok result as an independent cross-check, and it becomes the fallback
+ * classifier if the Grok API is unreachable, so the system never fails silently.
  */
 
 const { verdictFromScore } = require('./constants');
@@ -218,7 +218,7 @@ function analyzeRules(rawText) {
   return { score, verdict, category, signals, tactics: [...tactics], indicators: extractIndicators(text) };
 }
 
-/** Build a full analysis object (same shape as the Gemini result) from rule output. */
+/** Build a full analysis object (same shape as the Grok result) from rule output. */
 function rulesToAnalysis(rules) {
   const isSafe = rules.verdict === 'LIKELY_SAFE';
   const actions = isSafe ? ACTIONS.SAFE : (ACTIONS[rules.category] || ACTIONS.DEFAULT);

@@ -35,7 +35,7 @@ test('indicator extraction finds links, UPI IDs, amounts and accounts', () => {
   assert.ok(ind.phone_numbers.length === 1);
 });
 
-test('rulesToAnalysis produces the same shape as the Gemini result', () => {
+test('rulesToAnalysis produces the same shape as the Grok result', () => {
   const a = rulesToAnalysis(analyzeRules(SAMPLES[0].text));
   for (const k of ['verdict', 'risk_score', 'confidence', 'scam_category', 'impersonated_entity', 'summary', 'red_flags', 'recommended_actions', 'do_not']) {
     assert.ok(k in a, `missing ${k}`);
