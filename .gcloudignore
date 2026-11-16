@@ -1,9 +1,0 @@
-# Files NOT uploaded to Cloud Build when running `gcloud run deploy --source .`
-.gcloudignore
-.git
-.gitignore
-.env
-node_modules/
-docs/
-tests/
-*.zip
