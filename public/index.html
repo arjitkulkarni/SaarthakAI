@@ -136,3 +136,104 @@
       </form>
     </section>
 
+    <section class="card result-card" id="result" aria-live="polite" aria-labelledby="result-title">
+      <div class="card__head">
+        <h2 id="result-title"><span class="step">2</span>Scam analysis</h2>
+        <span class="engine" id="engine" hidden></span>
+      </div>
+
+      <!-- Empty -->
+      <div class="state state--empty" id="state-empty">
+        <div class="radar" aria-hidden="true"><span></span><span></span><span></span>
+          <svg viewBox="0 0 32 32"><path d="M16 2 4 6.5v8.7c0 7.4 5.1 13.6 12 15.8 6.9-2.2 12-8.4 12-15.8V6.5L16 2Z" fill="#FFD60A"/><path d="M16 9v9" stroke="#0B0B0C" stroke-width="3.2" stroke-linecap="round"/><circle cx="16" cy="23" r="1.9" fill="#0B0B0C"/></svg>
+        </div>
+        <h3>Your result will appear here</h3>
+        <p>Satark AI gives a risk score, the type of scam, the exact red flags in the message, and the steps to take next.</p>
+        <ul class="legend">
+          <li><span class="legend__sw legend__sw--safe"></span>0–29 Likely safe</li>
+          <li><span class="legend__sw legend__sw--sus"></span>30–59 Suspicious</li>
+          <li><span class="legend__sw legend__sw--scam"></span>60–100 Scam</li>
+        </ul>
+      </div>
+
+      <!-- Loading -->
+      <div class="state state--loading" id="state-loading" hidden>
+        <div class="loader" aria-hidden="true"><span></span></div>
+        <ol class="progress" id="progress">
+          <li>Sending securely to Google Cloud Run</li>
+          <li>Gemini is reading the content</li>
+          <li>Matching known Indian scam patterns</li>
+          <li>Preparing your safety advice</li>
+        </ol>
+      </div>
+
+      <!-- Result -->
+      <div class="state state--result" id="state-result" hidden>
+        <div class="verdict" id="verdict">
+          <div class="gauge" aria-hidden="true">
+            <svg viewBox="0 0 120 70">
+              <path class="gauge__track" d="M10 62a50 50 0 0 1 100 0" pathLength="100"/>
+              <path class="gauge__fill" id="gauge-fill" d="M10 62a50 50 0 0 1 100 0" pathLength="100"/>
+            </svg>
+            <div class="gauge__value"><b id="score">0</b><small>/100 risk</small></div>
+          </div>
+          <div class="verdict__text">
+            <p class="verdict__label" id="verdict-label">—</p>
+            <p class="verdict__cat" id="verdict-cat"></p>
+            <div class="verdict__meta" id="verdict-meta"></div>
+          </div>
+        </div>
+
+        <p class="notice" id="notice" hidden></p>
+
+        <div class="block">
+          <h3>Summary</h3>
+          <p class="summary" id="summary"></p>
+        </div>
+
+        <div class="block" id="flags-block">
+          <h3>Red flags found <span class="count" id="flags-count"></span></h3>
+          <ol class="flags" id="flags"></ol>
+        </div>
+
+        <div class="cols">
+          <div class="block">
+            <h3>What to do now</h3>
+            <ol class="actions" id="actions"></ol>
+          </div>
+          <div class="block" id="donot-block">
+            <h3>Do NOT</h3>
+            <ul class="donot" id="donot"></ul>
+          </div>
+        </div>
+
+        <div class="block" id="ind-block" hidden>
+          <h3>Details to include in your complaint</h3>
+          <div class="indicators" id="indicators"></div>
+        </div>
+
+        <details class="crosscheck" id="crosscheck">
+          <summary>Rule-engine cross-check <span id="cc-badge"></span></summary>
+          <p id="cc-text"></p>
+          <ul id="cc-list"></ul>
+        </details>
+
+        <div class="report">
+          <div class="report__title">
+            <b>Report cyber fraud</b>
+            <span>Free government channels, available 24×7</span>
+          </div>
+          <div class="report__links" id="helplines"></div>
+        </div>
+
+        <div class="result-actions">
+          <button type="button" class="btn btn--primary" id="copy-complaint">Copy complaint draft</button>
+          <button type="button" class="btn btn--ghost" id="print">Print / Save PDF</button>
+          <button type="button" class="btn btn--ghost" id="again">Check another</button>
+        </div>
+        <p class="disclaimer">Satark AI is an awareness and decision-support tool. It does not replace the police, your bank or the 1930 helpline. Always verify through official channels.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ How it works ============ -->
