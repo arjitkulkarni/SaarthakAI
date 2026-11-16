@@ -1,17 +1,18 @@
 {
   "name": "satark-ai",
   "version": "1.0.0",
-  "description": "Satark AI - AI-Based Digital Arrest & Cyber Fraud Scam Detection System (Google Gemini API on Google Cloud Run)",
+  "description": "Satark AI - AI-Based Digital Arrest & Cyber Fraud Scam Detection System (xAI Grok API on Vercel)",
   "main": "server.js",
   "type": "commonjs",
   "private": true,
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "deploy": "vercel deploy --prod"
   },
   "license": "MIT"
 }
