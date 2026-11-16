@@ -13,7 +13,7 @@
 
   <!-- Title -->
   <text x="40" y="52" class="t" font-size="30" font-weight="800">Satark AI: System Architecture</text>
-  <text x="40" y="82" class="m x">AI-Based Digital Arrest &amp; Cyber Fraud Scam Detection System · Google Gemini API (Google AI Studio) on Google Cloud Run</text>
+  <text x="40" y="82" class="m x">AI-Based Digital Arrest &amp; Cyber Fraud Scam Detection System · xAI Grok API on Vercel</text>
   <rect x="0" y="100" width="1660" height="8" fill="#FFD60A"/>
 
   <!-- User / input -->
@@ -39,17 +39,17 @@
   <text x="60" y="701" class="w x">• 1930 · cybercrime.gov.in</text>
   <text x="60" y="740" class="y lbl">Shown to the user</text>
 
-  <!-- Google Cloud container -->
+  <!-- Vercel platform -->
   <rect x="350" y="130" width="830" height="660" rx="20" fill="#FAFAF7" stroke="#0B0B0C" stroke-width="2" stroke-dasharray="10 8"/>
-  <text x="375" y="165" class="t s">Google Cloud Platform · region asia-south1 (Mumbai)</text>
+  <text x="375" y="165" class="t s">Vercel platform · Edge Network + Functions · region bom1 (Mumbai)</text>
 
-  <!-- Cloud Run -->
+  <!-- Vercel Function -->
   <rect x="390" y="190" width="750" height="390" rx="16" fill="#FFD60A" stroke="#0B0B0C" stroke-width="2.5"/>
-  <text x="415" y="228" class="t h">Google Cloud Run: “satark-ai” service</text>
-  <text x="415" y="252" class="t x">Serverless Node.js container · HTTPS · autoscaling 0→3 instances</text>
+  <text x="415" y="228" class="t h">Vercel Function: “satark-ai” (api/index.js)</text>
+  <text x="415" y="252" class="t x">Serverless Node.js 22 · HTTPS · automatic scaling · 60 s limit</text>
   <g>
     <rect x="415" y="270" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
-    <text x="435" y="301" class="t s">Web dashboard (HTML / CSS / JS) + REST API  ·  POST /api/analyze</text>
+    <text x="435" y="301" class="t s">Dashboard on Edge CDN (HTML / CSS / JS) + REST API  ·  POST /api/analyze</text>
     <rect x="415" y="330" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
     <circle cx="442" cy="355" r="14" fill="#0B0B0C"/><text x="442" y="360" text-anchor="middle" class="y lbl">2</text>
     <text x="466" y="361" class="t s">Input validation · rate limiting · security headers (CSP)</text>
@@ -57,7 +57,7 @@
     <circle cx="442" cy="415" r="14" fill="#0B0B0C"/><text x="442" y="420" text-anchor="middle" class="y lbl">2</text>
     <text x="466" y="421" class="t s">Layer 1: Rule engine (Indian scam patterns) + indicator extraction</text>
     <rect x="415" y="450" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
-    <text x="435" y="481" class="t s">Layer 2: Gemini client · structured-output schema · model fallback</text>
+    <text x="435" y="481" class="t s">Layer 2: Grok client · strict JSON schema · model fallback</text>
     <rect x="415" y="510" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
     <circle cx="442" cy="535" r="14" fill="#0B0B0C"/><text x="442" y="540" text-anchor="middle" class="y lbl">5</text>
     <text x="466" y="541" class="t s">Validate JSON · merge with rule check · offline fallback</text>
@@ -65,32 +65,32 @@
 
   <!-- Supporting GCP services -->
   <rect x="390" y="640" width="235" height="120" rx="14" fill="#fff" stroke="#0B0B0C" stroke-width="2"/>
-  <text x="410" y="676" class="t s">Secret Manager</text>
-  <text x="410" y="702" class="m x">Stores GEMINI_API_KEY,</text>
-  <text x="410" y="724" class="m x">injected at runtime</text>
+  <text x="410" y="676" class="t s">Environment Variables</text>
+  <text x="410" y="702" class="m x">XAI_API_KEY (encrypted,</text>
+  <text x="410" y="724" class="m x">sensitive) read at runtime</text>
   <rect x="648" y="640" width="235" height="120" rx="14" fill="#fff" stroke="#0B0B0C" stroke-width="2"/>
-  <text x="668" y="676" class="t s">Cloud Logging</text>
+  <text x="668" y="676" class="t s">Vercel Runtime Logs</text>
   <text x="668" y="702" class="m x">Structured JSON logs:</text>
   <text x="668" y="724" class="m x">verdict, latency, engine</text>
   <rect x="905" y="640" width="235" height="120" rx="14" fill="#fff" stroke="#0B0B0C" stroke-width="2"/>
-  <text x="925" y="676" class="t s">Cloud Build +</text>
-  <text x="925" y="698" class="t s">Artifact Registry</text>
-  <text x="925" y="724" class="m x">Builds container image</text>
+  <text x="925" y="676" class="t s">GitHub + Vercel CLI</text>
+  <text x="925" y="698" class="t s">(vercel deploy --prod)</text>
+  <text x="925" y="724" class="m x">Tests, builds, deploys</text>
   <path d="M507 640V584" class="arrow"/>
   <path d="M765 584V640" class="arrow"/>
   <path d="M1022 640V584" class="arrow"/>
 
-  <!-- Gemini -->
+  <!-- xAI Grok -->
   <rect x="1300" y="190" width="320" height="330" rx="16" fill="#0B0B0C"/>
-  <text x="1322" y="232" class="y h">Google Gemini API</text>
-  <text x="1322" y="258" class="w x">via Google AI Studio API key</text>
+  <text x="1322" y="232" class="y h">xAI Grok API</text>
+  <text x="1322" y="258" class="w x">api.x.ai · Bearer API key</text>
   <rect x="1322" y="276" width="276" height="1" fill="#3A3A40"/>
-  <text x="1322" y="306" class="w x">• Model: gemini-3.8-flash</text>
-  <text x="1322" y="334" class="w x">• Multimodal: text + screenshot</text>
-  <text x="1322" y="362" class="w x">• System instruction with Indian</text>
+  <text x="1322" y="306" class="w x">• Model: grok-4.20 (non-reasoning)</text>
+  <text x="1322" y="334" class="w x">• Vision: text + screenshot</text>
+  <text x="1322" y="362" class="w x">• System prompt with Indian</text>
   <text x="1336" y="384" class="w x">scam / digital-arrest knowledge</text>
   <text x="1322" y="412" class="w x">• Structured JSON output</text>
-  <text x="1336" y="434" class="w x">(response schema)</text>
+  <text x="1336" y="434" class="w x">(json_schema, strict)</text>
   <text x="1322" y="462" class="w x">• Replies in EN / HI / KN</text>
   <text x="1322" y="500" class="y lbl">AI processing happens here</text>
 
@@ -123,5 +123,5 @@
 
   <!-- Legend -->
   <text x="40" y="826" class="t lbl">Flow:</text>
-  <text x="92" y="826" class="t x">1 User submits text / screenshot  →  2 Cloud Run validates + rule check  →  3 Gemini analyses  →  4 Structured JSON returned  →  5 Validated &amp; merged  →  6 Result + safety advice shown</text>
+  <text x="92" y="826" class="t x">1 User submits text / screenshot  →  2 Vercel Function validates + rule check  →  3 Grok analyses  →  4 Structured JSON returned  →  5 Validated &amp; merged  →  6 Result + safety advice shown</text>
 </svg>
