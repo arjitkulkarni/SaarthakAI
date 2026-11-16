@@ -278,3 +278,53 @@
     const fill = $('gauge-fill');
     fill.style.strokeDasharray = '0 100';
     fill.style.opacity = a.risk_score > 0 ? '1' : '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.strokeDasharray = `${a.risk_score} 100`; }));
+    countUp($('score'), a.risk_score);
+
+    $('notice').hidden = !data.notice;
+    $('notice').textContent = data.notice || '';
+    $('summary').textContent = a.summary;
+
+    const flags = $('flags');
+    flags.replaceChildren();
+    $('flags-count').textContent = a.red_flags.length || '';
+    if (!a.red_flags.length) flags.append(el('li', { class: 'flags__empty', text: 'No red flags were found in this content.' }));
+    for (const f of a.red_flags) {
+      flags.append(el('li', { class: 'flag' },
+        el('span', { class: 'tag', text: TACTIC_LABELS[f.tactic] || 'Red flag' }),
+        f.evidence ? el('p', { class: 'flag__quote', text: f.evidence }) : null,
+        el('p', { class: 'flag__why', text: f.explanation })));
+    }
+
+    $('actions').replaceChildren(...a.recommended_actions.map((t) => el('li', { text: t })));
+    $('donot-block').hidden = !a.do_not.length;
+    $('donot-block').parentElement.classList.toggle('cols--single', !a.do_not.length);
+    $('donot').replaceChildren(...a.do_not.map((t) => el('li', { text: t })));
+
+    const ind = $('indicators');
+    ind.replaceChildren();
+    for (const [k, list] of Object.entries(data.indicators || {})) {
+      for (const val of list) ind.append(el('span', { class: 'ind' }, el('b', { text: IND_LABELS[k] || k }), val));
+    }
+    $('ind-block').hidden = a.verdict === 'LIKELY_SAFE' || !ind.children.length;
+
+    const rc = data.rule_check;
+    const agree = rc.verdict === a.verdict;
+    $('cc-badge').replaceChildren(el('span', { class: `agree${agree ? '' : ' is-diff'}`, text: agree ? 'agrees' : 'differs' }));
+    $('cc-text').textContent = data.engine === 'gemini'
+      ? `An independent keyword/pattern engine scored this ${rc.score}/100 (${rc.verdict.replace('_', ' ').toLowerCase()}). ${agree ? 'Both layers agree.' : 'Gemini understands context the rule engine cannot, so its verdict is shown.'}`
+      : `Rule engine score: ${rc.score}/100. Patterns matched:`;
+    $('cc-list').replaceChildren(...(rc.signals.length
+      ? rc.signals.map((s) => el('li', { text: `${TACTIC_LABELS[s.tactic]}: ${s.explanation}` }))
+      : [el('li', { text: 'No known scam keyword patterns matched.' })]));
+
+    $('helplines').replaceChildren(...data.helplines.map((h) =>
+      el('a', { href: h.href, target: h.href.startsWith('http') ? '_blank' : '_self', rel: 'noopener' }, h.value, el('small', { text: h.label }))));
+
+    show('result');
+  }
+
+  function countUp(node, target) {
+    const start = performance.now();
+    const dur = 900;
+    const step = (t) => {
