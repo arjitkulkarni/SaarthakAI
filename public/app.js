@@ -45,3 +45,30 @@
   const state = { image: null, last: null, lastText: '', samples: [], progressTimer: null };
 
   /* ---------------- helpers ---------------- */
+  function el(tag, attrs = {}, ...children) {
+    const node = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'class') node.className = v;
+      else if (k === 'text') node.textContent = v;
+      else node.setAttribute(k, v);
+    }
+    for (const c of children) if (c != null) node.append(c);
+    return node;
+  }
+  function show(which) {
+    for (const s of ['empty', 'loading', 'result']) $(`state-${s}`).hidden = s !== which;
+  }
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+  function setError(msg) {
+    $('error').textContent = msg || '';
+    $('error').hidden = !msg;
+  }
+  const language = () => document.querySelector('input[name="language"]:checked').value;
+
+  /* ---------------- status + stats ---------------- */
