@@ -328,3 +328,54 @@
     const start = performance.now();
     const dur = 900;
     const step = (t) => {
+      const p = Math.min(1, (t - start) / dur);
+      node.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------------- result actions ---------------- */
+  $('copy-complaint').addEventListener('click', async () => {
+    const d = state.last;
+    if (!d) return;
+    const a = d.analysis;
+    const lines = [
+      'CYBER FRAUD COMPLAINT - DRAFT (for cybercrime.gov.in / 1930)',
+      '',
+      `Date & time of analysis: ${new Date(d.analyzedAt).toLocaleString()}`,
+      `Type of fraud: ${CATEGORY_LABELS[a.scam_category] || a.scam_category}`,
+      `Risk assessment: ${a.verdict} (${a.risk_score}/100)`,
+      a.impersonated_entity ? `Caller / sender pretended to be: ${a.impersonated_entity}` : null,
+      '',
+      'What happened:',
+      a.summary,
+      '',
+      'Red flags:',
+      ...a.red_flags.map((f, i) => `${i + 1}. "${f.evidence}" - ${f.explanation}`),
+    ];
+    const ind = d.indicators || {};
+    const indLines = Object.entries(ind).flatMap(([k, v]) => v.map((x) => `- ${IND_LABELS[k]}: ${x}`));
+    if (indLines.length) lines.push('', 'Suspect details:', ...indLines);
+    if (state.lastText) lines.push('', 'Original message:', state.lastText);
+    lines.push('', '[Add: your name, phone number, amount lost (if any), transaction IDs, date & time of the call]');
+    const out = lines.filter((l) => l !== null).join('\n');
+    try {
+      await navigator.clipboard.writeText(out);
+      toast('Complaint draft copied - paste it at cybercrime.gov.in');
+    } catch {
+      toast('Copy failed - please select and copy manually');
+    }
+  });
+  $('print').addEventListener('click', () => window.print());
+  $('again').addEventListener('click', () => {
+    $('reset').click();
+    $('analyze').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ---------------- init ---------------- */
+  updateCount();
+  loadHealth();
+  loadSamples();
+  loadStats();
+})();
