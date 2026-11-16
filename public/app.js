@@ -132,3 +132,50 @@
   $('tab-image').addEventListener('click', () => selectTab('image'));
 
   /* ---------------- text ---------------- */
+  function updateCount() { $('count').textContent = `${$('message').value.length} / 8000`; }
+  $('message').addEventListener('input', updateCount);
+  $('message').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); $('analyze-form').requestSubmit(); }
+  });
+
+  /* ---------------- image ---------------- */
+  function readImage(file) {
+    if (!file || !/^image\/(png|jpe?g|webp)$/i.test(file.type)) {
+      setError('Please choose a PNG, JPG or WEBP image.');
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) { setError('Image is too large (max 15 MB).'); return; }
+    setError('');
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      // Downscale large screenshots so uploads stay fast on mobile data.
+      const max = 1600;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      state.image = { mimeType: 'image/jpeg', data: dataUrl.split(',')[1] };
+      $('preview-img').src = dataUrl;
+      $('drop-empty').hidden = true;
+      $('drop-preview').hidden = false;
+      URL.revokeObjectURL(url);
+      selectTab('image');
+    };
+    img.onerror = () => setError('Could not read that image.');
+    img.src = url;
+  }
+  function clearImage() {
+    state.image = null;
+    $('file').value = '';
+    $('preview-img').removeAttribute('src');
+    $('drop-empty').hidden = false;
+    $('drop-preview').hidden = true;
+  }
+  $('file').addEventListener('change', (e) => readImage(e.target.files[0]));
+  $('clear-image').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); clearImage(); });
