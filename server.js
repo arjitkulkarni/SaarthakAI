@@ -2,7 +2,8 @@
 
 /**
  * Satark AI - AI-Based Digital Arrest & Cyber Fraud Scam Detection System
- * HTTP server designed for Google Cloud Run (stateless, listens on $PORT).
+ * Stateless HTTP handler: runs as a Vercel serverless function (api/index.js)
+ * and as a plain Node.js server locally (`npm start`, listens on $PORT).
  *
  *   GET  /                -> web dashboard (public/)
  *   GET  /api/health      -> health + configuration status
@@ -19,15 +20,15 @@ const crypto = require('node:crypto');
 loadDotEnv(path.join(__dirname, '.env'));
 
 const { analyzeRules, rulesToAnalysis } = require('./src/rules');
-const { analyzeWithGemini, DEFAULT_MODEL } = require('./src/gemini');
+const { analyzeWithGrok, DEFAULT_MODEL } = require('./src/grok');
 const { SAMPLES } = require('./src/samples');
 const { HELPLINES, LANGUAGES } = require('./src/constants');
 
 const PORT = Number(process.env.PORT) || 8080;
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const MAX_BODY_BYTES = 7 * 1024 * 1024; // ~5 MB image after base64
+const MAX_BODY_BYTES = 4 * 1024 * 1024; // Vercel caps request bodies at 4.5 MB
 const MAX_TEXT_CHARS = 8000;
-const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/heic', 'image/heif'];
+const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg']; // Grok vision accepts JPG and PNG
 const RATE_LIMIT = { windowMs: 60_000, max: Number(process.env.RATE_LIMIT_PER_MIN) || 20 };
 
 const MIME = {
@@ -59,7 +60,7 @@ const SECURITY_HEADERS = {
   ].join('; '),
 };
 
-const stats = { startedAt: new Date().toISOString(), total: 0, scam: 0, suspicious: 0, safe: 0, gemini: 0, fallback: 0, categories: {} };
+const stats = { startedAt: new Date().toISOString(), total: 0, scam: 0, suspicious: 0, safe: 0, ai: 0, fallback: 0, categories: {} };
 const hits = new Map();
 
 /* ------------------------------------------------------------------ helpers */
@@ -70,11 +71,11 @@ function loadDotEnv(file) {
       const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/i);
       if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
     }
-  } catch { /* no .env file - fine on Cloud Run */ }
+  } catch { /* no .env file - fine on Vercel, keys come from environment variables */ }
 }
 
 function log(severity, message, extra = {}) {
-  // Structured JSON logs are parsed automatically by Google Cloud Logging.
+  // One JSON object per line: searchable and filterable in Vercel's runtime logs.
   console.log(JSON.stringify({ severity, message, ...extra }));
 }
 
@@ -102,13 +103,22 @@ function rateLimited(ip) {
 }
 
 function readJsonBody(req) {
+  // On Vercel the platform has already buffered and parsed the body.
+  if (req.body !== undefined && req.body !== null) {
+    if (typeof req.body === 'object' && !Buffer.isBuffer(req.body)) return Promise.resolve(req.body);
+    try {
+      return Promise.resolve(JSON.parse(String(req.body) || '{}'));
+    } catch {
+      return Promise.reject(Object.assign(new Error('Invalid JSON body'), { status: 400 }));
+    }
+  }
   return new Promise((resolve, reject) => {
     let size = 0;
     const chunks = [];
     req.on('data', (c) => {
       size += c.length;
       if (size > MAX_BODY_BYTES) {
-        reject(Object.assign(new Error('Request too large (max ~5 MB image)'), { status: 413 }));
+        reject(Object.assign(new Error('Request too large (max ~3 MB image)'), { status: 413 }));
         req.destroy();
         return;
       }
@@ -132,7 +142,7 @@ function validateInput(body) {
   if (body.image && typeof body.image === 'object') {
     const mimeType = String(body.image.mimeType || '').toLowerCase();
     const data = String(body.image.data || '').replace(/^data:[^,]+,/, '');
-    if (!ALLOWED_IMAGE_TYPES.includes(mimeType)) throw Object.assign(new Error('Unsupported image type. Use PNG, JPG or WEBP.'), { status: 400 });
+    if (!ALLOWED_IMAGE_TYPES.includes(mimeType)) throw Object.assign(new Error('Unsupported image type. Use PNG or JPG.'), { status: 400 });
     if (!/^[A-Za-z0-9+/=\s]+$/.test(data)) throw Object.assign(new Error('Image data must be base64'), { status: 400 });
     image = { mimeType, data };
   }
@@ -147,7 +157,7 @@ function record(analysis, engine) {
   if (analysis.verdict === 'SCAM') stats.scam += 1;
   else if (analysis.verdict === 'SUSPICIOUS') stats.suspicious += 1;
   else stats.safe += 1;
-  stats[engine === 'gemini' ? 'gemini' : 'fallback'] += 1;
+  stats[engine === 'grok' ? 'ai' : 'fallback'] += 1;
   if (analysis.scam_category !== 'NOT_A_SCAM') {
     stats.categories[analysis.scam_category] = (stats.categories[analysis.scam_category] || 0) + 1;
   }
@@ -170,29 +180,29 @@ async function handleAnalyze(req, res) {
   // Layer 1: rule engine (always runs, instant, offline).
   const rules = analyzeRules(input.text);
 
-  // Layer 2: Gemini (primary AI analysis). Falls back to rules if unavailable.
+  // Layer 2: Grok (primary AI analysis). Falls back to rules if unavailable.
   let analysis;
-  let engine = 'gemini';
+  let engine = 'grok';
   let model = null;
   let latencyMs = 0;
   let notice = null;
   try {
-    const out = await analyzeWithGemini(input);
+    const out = await analyzeWithGrok(input);
     analysis = out.analysis;
     model = out.model;
     latencyMs = out.latencyMs;
   } catch (err) {
-    log('WARNING', 'Gemini unavailable, using rule engine', { requestId, error: err.message });
+    log('WARNING', 'Grok unavailable, using rule engine', { requestId, error: err.message });
     if (input.image && !input.text) {
       return sendJson(res, 503, {
-        error: 'Screenshot analysis needs the Gemini API, which is not reachable right now. Paste the message text instead, or try again shortly.',
+        error: 'Screenshot analysis needs the Grok API, which is not reachable right now. Paste the message text instead, or try again shortly.',
       });
     }
     analysis = rulesToAnalysis(rules);
     engine = 'rules';
-    notice = process.env.GEMINI_API_KEY
-      ? 'Gemini AI was unreachable, so this result comes from the offline rule engine.'
-      : 'Gemini API key not configured - showing the offline rule-engine result.';
+    notice = process.env.XAI_API_KEY
+      ? 'Grok AI was unreachable, so this result comes from the offline rule engine.'
+      : 'xAI API key not configured - showing the offline rule-engine result.';
   }
 
   record(analysis, engine);
@@ -244,7 +254,7 @@ function serveStatic(req, res, pathname) {
   });
 }
 
-const server = http.createServer(async (req, res) => {
+async function handler(req, res) {
   const { pathname } = new URL(req.url, 'http://localhost');
   try {
     if (pathname === '/api/analyze') {
@@ -255,10 +265,12 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, {
         status: 'ok',
         service: 'satark-ai',
-        geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
-        model: process.env.GEMINI_MODEL || DEFAULT_MODEL,
-        region: process.env.CLOUD_RUN_REGION || null,
-        revision: process.env.K_REVISION || 'local',
+        aiProvider: 'xAI Grok',
+        aiConfigured: Boolean(process.env.XAI_API_KEY),
+        model: process.env.GROK_MODEL || DEFAULT_MODEL,
+        platform: process.env.VERCEL ? 'vercel' : 'local',
+        region: process.env.VERCEL_REGION || null,
+        deployment: process.env.VERCEL_GIT_COMMIT_SHA ? process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7) : (process.env.VERCEL_DEPLOYMENT_ID || 'local'),
         uptimeSec: Math.round(process.uptime()),
       });
     }
@@ -271,18 +283,20 @@ const server = http.createServer(async (req, res) => {
     log('ERROR', 'unhandled error', { error: err.stack || String(err) });
     if (!res.headersSent) sendJson(res, 500, { error: 'Internal server error' });
   }
-});
+}
+
+const server = http.createServer(handler);
 
 if (require.main === module) {
   server.listen(PORT, () => {
     log('INFO', `Satark AI listening on http://localhost:${PORT}`, {
-      geminiConfigured: Boolean(process.env.GEMINI_API_KEY),
-      model: process.env.GEMINI_MODEL || DEFAULT_MODEL,
+      aiConfigured: Boolean(process.env.XAI_API_KEY),
+      model: process.env.GROK_MODEL || DEFAULT_MODEL,
     });
   });
   const shutdown = () => server.close(() => process.exit(0));
-  process.on('SIGTERM', shutdown); // Cloud Run sends SIGTERM before stopping an instance
+  process.on('SIGTERM', shutdown);
   process.on('SIGINT', shutdown);
 }
 
-module.exports = { server, validateInput };
+module.exports = { handler, server, validateInput };
