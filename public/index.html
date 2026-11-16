@@ -237,3 +237,42 @@
   </main>
 
   <!-- ============ How it works ============ -->
+  <section class="section" id="how">
+    <div class="wrap">
+      <p class="section__eyebrow">Architecture</p>
+      <h2 class="section__title">How Satark AI works</h2>
+      <ol class="pipeline">
+        <li>
+          <span class="pipeline__n">01</span>
+          <h3>Input</h3>
+          <p>A citizen pastes a message or call transcript, or uploads a screenshot, from any phone or laptop browser.</p>
+        </li>
+        <li>
+          <span class="pipeline__n">02</span>
+          <h3>Google Cloud Run</h3>
+          <p>A serverless container receives the request over HTTPS, validates it, rate-limits it and runs the instant rule-engine check.</p>
+        </li>
+        <li>
+          <span class="pipeline__n">03</span>
+          <h3>Gemini API</h3>
+          <p>Gemini (Google AI Studio) reads the text and image together and returns a structured JSON verdict, red flags and advice.</p>
+        </li>
+        <li>
+          <span class="pipeline__n">04</span>
+          <h3>Result</h3>
+          <p>The dashboard shows the risk score, scam type, highlighted evidence, next steps in your language and the 1930 / cybercrime.gov.in links.</p>
+        </li>
+      </ol>
+      <div class="stack">
+        <span>Google Gemini API</span><span>Google AI Studio</span><span>Google Cloud Run</span><span>Secret Manager</span><span>Cloud Logging</span><span>Node.js</span>
+      </div>
+      <div class="livestats" id="livestats" hidden>
+        <div><b id="st-total">0</b><span>messages checked</span></div>
+        <div><b id="st-scam">0</b><span>scams detected</span></div>
+        <div><b id="st-sus">0</b><span>suspicious</span></div>
+        <div><b id="st-safe">0</b><span>likely safe</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Awareness ============ -->
