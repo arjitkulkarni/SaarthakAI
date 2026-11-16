@@ -72,3 +72,67 @@
   </section>
 
   <!-- ============ Analyser ============ -->
+  <main id="analyze" class="wrap analyser">
+    <section class="card input-card" aria-labelledby="input-title">
+      <div class="card__head">
+        <h2 id="input-title"><span class="step">1</span>What did you receive?</h2>
+        <div class="tabs" role="tablist" aria-label="Input type">
+          <button role="tab" class="tab is-active" id="tab-text" aria-selected="true" aria-controls="panel-text">Message</button>
+          <button role="tab" class="tab" id="tab-image" aria-selected="false" aria-controls="panel-image">Screenshot</button>
+        </div>
+      </div>
+
+      <form id="analyze-form" novalidate>
+        <div id="panel-text" role="tabpanel" aria-labelledby="tab-text">
+          <label class="sr-only" for="message">Message or call transcript</label>
+          <textarea id="message" name="message" rows="9" maxlength="8000"
+            placeholder="Paste the SMS, WhatsApp chat, email or what the caller said…&#10;&#10;e.g. “This is Inspector Sharma from Mumbai Cyber Crime. An arrest warrant has been issued in your name…”"></textarea>
+          <div class="field-foot"><span>Tip: <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to analyse</span><span id="count">0 / 8000</span></div>
+        </div>
+
+        <div id="panel-image" role="tabpanel" aria-labelledby="tab-image" hidden>
+          <label class="drop" id="drop" for="file">
+            <input type="file" id="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <div class="drop__empty" id="drop-empty">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5V19a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2.5M12 4v11m0-11-4 4m4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <b>Drop a screenshot here</b>
+              <span>or click to browse · or paste with <kbd>Ctrl</kbd> + <kbd>V</kbd></span>
+              <small>PNG, JPG or WEBP · Gemini reads the text in the image</small>
+            </div>
+            <div class="drop__preview" id="drop-preview" hidden>
+              <img id="preview-img" alt="Uploaded screenshot preview">
+              <button type="button" class="btn btn--ghost btn--sm" id="clear-image">Remove</button>
+            </div>
+          </label>
+          <p class="hint">You can also add context in the Message tab. Both are sent together.</p>
+        </div>
+
+        <div class="options">
+          <fieldset class="lang">
+            <legend>Answer in</legend>
+            <label><input type="radio" name="language" value="en" checked><span>English</span></label>
+            <label><input type="radio" name="language" value="hi"><span>हिन्दी</span></label>
+            <label><input type="radio" name="language" value="kn"><span>ಕನ್ನಡ</span></label>
+          </fieldset>
+        </div>
+
+        <div class="samples">
+          <p class="samples__label">Try a demo example</p>
+          <div class="samples__list" id="samples"></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary btn--lg" id="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6l-7-3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Analyse for scams</span>
+          </button>
+          <button type="button" class="btn btn--ghost" id="reset">Clear</button>
+        </div>
+        <p class="error" id="error" role="alert" hidden></p>
+        <p class="privacy">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          Content is analysed in memory over HTTPS and is not stored. Remove personal details you do not need to share.
+        </p>
+      </form>
+    </section>
+
