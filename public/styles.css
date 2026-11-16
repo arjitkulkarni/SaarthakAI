@@ -1,0 +1,54 @@
+/* =========================================================
+   Satark AI - white / black / yellow design system
+   ========================================================= */
+:root {
+  --ink: #0B0B0C;
+  --ink-2: #1C1C1F;
+  --ink-3: #3A3A40;
+  --muted: #6B6B73;
+  --line: #E7E5DF;
+  --line-2: #D6D3CA;
+  --paper: #FFFFFF;
+  --paper-2: #FAFAF7;
+  --paper-3: #F3F2EC;
+  --yellow: #FFD60A;
+  --yellow-2: #FFE45C;
+  --yellow-soft: #FFF6C7;
+  --yellow-ink: #6B5300;
+  --danger: #D92D20;
+  --safe: #16A34A;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgba(11, 11, 12, .04), 0 8px 24px rgba(11, 11, 12, .06);
+  --shadow-lg: 0 2px 4px rgba(11, 11, 12, .05), 0 18px 48px rgba(11, 11, 12, .10);
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Kannada', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper-2);
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+button, input, textarea { font: inherit; color: inherit; }
+h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -0.02em; }
+p { margin: 0; }
+kbd {
+  font-family: var(--mono); font-size: .75em; padding: 1px 6px; border-radius: 5px;
+  border: 1px solid var(--line-2); border-bottom-width: 2px; background: var(--paper);
+}
+:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; border-radius: 6px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: -999px; top: 8px; background: var(--yellow); padding: 8px 14px; z-index: 100; border-radius: 8px; font-weight: 600; }
+.skip:focus { left: 8px; }
+.wrap { width: min(1200px, 100% - 32px); margin-inline: auto; }
+
