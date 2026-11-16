@@ -174,12 +174,13 @@ async function analyzeWithGemini({ text, image, language }, opts = {}) {
 
   const deadline = Date.now() + (opts.totalBudgetMs || TOTAL_BUDGET_MS);
   let lastErr;
-  // Two passes over the model list: overload errors (429/5xx) are usually brief spikes.
+  // Two passes over the model list: overload errors (5xx) are usually brief spikes.
+  // Quota errors (429) are not retried - retrying only burns more of the quota.
   const attempts = [...models, ...models];
   for (let i = 0; i < attempts.length; i += 1) {
     const model = attempts[i];
     if (i === models.length) {
-      if (!lastErr || ![429, 500, 502, 503, 504].includes(lastErr.status)) break;
+      if (!lastErr || ![500, 502, 503, 504].includes(lastErr.status)) break;
       if (deadline - Date.now() < 6000) break;
       await new Promise((r) => setTimeout(r, opts.retryDelayMs ?? 2000));
     }
