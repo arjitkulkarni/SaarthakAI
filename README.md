@@ -70,3 +70,50 @@ gcloud run deploy satark-ai --source . --region asia-south1 --allow-unauthentica
 
 To confirm the deploy worked, open `https://<url>/api/health`. It should show `"geminiConfigured": true`.
 
+## API
+
+`POST /api/analyze`
+
+```json
+{ "text": "This is Inspector Sharma, Mumbai Cyber Crime...", "image": { "mimeType": "image/jpeg", "data": "<base64>" }, "language": "en" }
+```
+
+Response (trimmed):
+
+```json
+{
+  "engine": "gemini", "model": "gemini-3.8-flash",
+  "analysis": {
+    "verdict": "SCAM", "risk_score": 97, "scam_category": "DIGITAL_ARREST",
+    "impersonated_entity": "Mumbai Police / CBI",
+    "red_flags": [{ "evidence": "You are now under digital arrest", "explanation": "...", "tactic": "FEAR_THREAT" }],
+    "recommended_actions": ["..."], "do_not": ["..."]
+  },
+  "rule_check": { "score": 100, "verdict": "SCAM" },
+  "indicators": { "upi_ids": [], "bank_accounts": ["A/c No: 50100234567812"] },
+  "helplines": [{ "value": "1930" }]
+}
+```
+
+The example response above shows the format only. Real values come from Gemini.
+
+Other endpoints: `GET /api/health`, `GET /api/samples`, `GET /api/stats`.
+
+## Project structure
+
+```
+server.js            HTTP server (Cloud Run entry point)
+src/gemini.js        Gemini API client, prompt, response schema, validation
+src/rules.js         Rule engine + indicator extraction (Layer 1 / fallback)
+src/samples.js       Demo messages (fictitious)
+src/constants.js     Categories, tactics, helplines
+public/              Dashboard UI (HTML/CSS/JS)
+tests/               node:test suites
+deploy/              Cloud Run deploy scripts (bash + PowerShell)
+docs/                Architecture diagram, screenshots, CAT-03 report, demo script
+Dockerfile           Container image for Cloud Run
+```
+
+## Disclaimer
+
+Satark AI is an awareness and decision-support tool. It does not replace the police, your bank or the **1930** helpline.
