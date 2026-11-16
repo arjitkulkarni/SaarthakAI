@@ -228,3 +228,53 @@
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
       state.last = data;
+      state.lastText = text;
+      render(data);
+      loadStats();
+    } catch (err) {
+      show(state.last ? 'result' : 'empty');
+      setError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      stopProgress();
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'Analyse for scams';
+    }
+  });
+
+  $('reset').addEventListener('click', () => {
+    $('message').value = '';
+    updateCount();
+    clearImage();
+    setError('');
+    state.last = null;
+    show('empty');
+    $('engine').hidden = true;
+    $('message').focus();
+  });
+
+  /* ---------------- render ---------------- */
+  function render(data) {
+    const a = data.analysis;
+    const v = VERDICT_TEXT[a.verdict] || VERDICT_TEXT.SUSPICIOUS;
+
+    const engine = $('engine');
+    engine.hidden = false;
+    engine.classList.toggle('is-rules', data.engine !== 'gemini');
+    engine.textContent = data.engine === 'gemini'
+      ? `Google Gemini · ${data.model} · ${(data.latencyMs / 1000).toFixed(1)}s`
+      : 'Offline rule engine';
+
+    const box = $('verdict');
+    box.className = `verdict ${v.cls}`;
+    const label = $('verdict-label');
+    label.innerHTML = v.icon; // static, trusted SVG
+    label.append(document.createTextNode(v.label));
+    $('verdict-cat').textContent = CATEGORY_LABELS[a.scam_category] || a.scam_category;
+    const meta = $('verdict-meta');
+    meta.replaceChildren(el('span', { class: 'meta', text: `Confidence: ${a.confidence.toLowerCase()}` }));
+    if (a.impersonated_entity) meta.append(el('span', { class: 'meta', text: `Pretending to be: ${a.impersonated_entity}` }));
+
+    $('score').textContent = '0';
+    const fill = $('gauge-fill');
+    fill.style.strokeDasharray = '0 100';
+    fill.style.opacity = a.risk_score > 0 ? '1' : '0';
