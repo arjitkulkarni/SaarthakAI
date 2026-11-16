@@ -72,3 +72,63 @@
   const language = () => document.querySelector('input[name="language"]:checked').value;
 
   /* ---------------- status + stats ---------------- */
+  async function loadHealth() {
+    const s = $('status');
+    try {
+      const h = await (await fetch('/api/health')).json();
+      s.classList.add(h.geminiConfigured ? 'is-online' : 'is-offline');
+      s.querySelector('.status__text').textContent = h.geminiConfigured
+        ? `Gemini online · ${h.revision === 'local' ? 'local' : 'Cloud Run'}`
+        : 'Offline rule engine';
+      s.title = `Model: ${h.model} · Revision: ${h.revision}`;
+    } catch {
+      s.querySelector('.status__text').textContent = 'Server unreachable';
+    }
+  }
+  async function loadStats() {
+    try {
+      const st = await (await fetch('/api/stats')).json();
+      if (!st.total) return;
+      $('livestats').hidden = false;
+      $('st-total').textContent = st.total;
+      $('st-scam').textContent = st.scam;
+      $('st-sus').textContent = st.suspicious;
+      $('st-safe').textContent = st.safe;
+    } catch { /* optional */ }
+  }
+
+  /* ---------------- samples ---------------- */
+  async function loadSamples() {
+    try {
+      const { samples } = await (await fetch('/api/samples')).json();
+      state.samples = samples;
+      const list = $('samples');
+      for (const s of samples) {
+        const b = el('button', { type: 'button', class: `sample${s.expected === 'LIKELY_SAFE' ? ' sample--safe' : ''}`, title: s.title },
+          el('span', { class: 'sample__dot' }), s.title);
+        b.addEventListener('click', () => {
+          selectTab('text');
+          $('message').value = s.text;
+          updateCount();
+          $('message').focus();
+          toast(`Loaded example: ${s.title}`);
+        });
+        list.append(b);
+      }
+    } catch { $('samples').closest('.samples').hidden = true; }
+  }
+
+  /* ---------------- tabs ---------------- */
+  function selectTab(name) {
+    for (const t of ['text', 'image']) {
+      const tab = $(`tab-${t}`);
+      const active = t === name;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', String(active));
+      $(`panel-${t}`).hidden = !active;
+    }
+  }
+  $('tab-text').addEventListener('click', () => selectTab('text'));
+  $('tab-image').addEventListener('click', () => selectTab('image'));
+
+  /* ---------------- text ---------------- */
