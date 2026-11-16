@@ -179,3 +179,52 @@
   }
   $('file').addEventListener('change', (e) => readImage(e.target.files[0]));
   $('clear-image').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); clearImage(); });
+  const drop = $('drop');
+  ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('is-over'); }));
+  ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('is-over'); }));
+  drop.addEventListener('drop', (e) => readImage(e.dataTransfer.files[0]));
+  document.addEventListener('paste', (e) => {
+    const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith('image/'));
+    if (item) { e.preventDefault(); readImage(item.getAsFile()); toast('Screenshot pasted'); }
+  });
+
+  /* ---------------- progress animation ---------------- */
+  function startProgress() {
+    const items = [...$('progress').children];
+    items.forEach((li) => li.classList.remove('is-active', 'is-done'));
+    let i = 0;
+    items[0].classList.add('is-active');
+    state.progressTimer = setInterval(() => {
+      if (i < items.length - 1) {
+        items[i].classList.replace('is-active', 'is-done');
+        i += 1;
+        items[i].classList.add('is-active');
+      }
+    }, 1400);
+  }
+  function stopProgress() { clearInterval(state.progressTimer); }
+
+  /* ---------------- submit ---------------- */
+  $('analyze-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setError('');
+    const text = $('message').value.trim();
+    if (!text && !state.image) { setError('Paste a message or upload a screenshot first.'); return; }
+
+    const btn = $('submit');
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Analysing…';
+    show('loading');
+    $('engine').hidden = true;
+    startProgress();
+    if (window.innerWidth < 1024) $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, image: state.image, language: language() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+      state.last = data;
