@@ -76,11 +76,11 @@
     const s = $('status');
     try {
       const h = await (await fetch('/api/health')).json();
-      s.classList.add(h.geminiConfigured ? 'is-online' : 'is-offline');
-      s.querySelector('.status__text').textContent = h.geminiConfigured
-        ? `Gemini online · ${h.revision === 'local' ? 'local' : 'Cloud Run'}`
+      s.classList.add(h.aiConfigured ? 'is-online' : 'is-offline');
+      s.querySelector('.status__text').textContent = h.aiConfigured
+        ? `Grok online · ${h.platform === 'vercel' ? 'Vercel' : 'local'}`
         : 'Offline rule engine';
-      s.title = `Model: ${h.model} · Revision: ${h.revision}`;
+      s.title = `Model: ${h.model} · Deployment: ${h.deployment}${h.region ? ' · Region: ' + h.region : ''}`;
     } catch {
       s.querySelector('.status__text').textContent = 'Server unreachable';
     }
@@ -159,7 +159,13 @@
       ctx.fillStyle = '#fff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      // Keep the upload under Vercel's 4.5 MB request limit.
+      let quality = 0.88;
+      let dataUrl = canvas.toDataURL('image/jpeg', quality);
+      while (dataUrl.length > 3_500_000 && quality > 0.4) {
+        quality -= 0.12;
+        dataUrl = canvas.toDataURL('image/jpeg', quality);
+      }
       state.image = { mimeType: 'image/jpeg', data: dataUrl.split(',')[1] };
       $('preview-img').src = dataUrl;
       $('drop-empty').hidden = true;
@@ -259,9 +265,9 @@
 
     const engine = $('engine');
     engine.hidden = false;
-    engine.classList.toggle('is-rules', data.engine !== 'gemini');
-    engine.textContent = data.engine === 'gemini'
-      ? `Google Gemini · ${data.model} · ${(data.latencyMs / 1000).toFixed(1)}s`
+    engine.classList.toggle('is-rules', data.engine !== 'grok');
+    engine.textContent = data.engine === 'grok'
+      ? `xAI Grok · ${data.model} · ${(data.latencyMs / 1000).toFixed(1)}s`
       : 'Offline rule engine';
 
     const box = $('verdict');
@@ -311,8 +317,8 @@
     const rc = data.rule_check;
     const agree = rc.verdict === a.verdict;
     $('cc-badge').replaceChildren(el('span', { class: `agree${agree ? '' : ' is-diff'}`, text: agree ? 'agrees' : 'differs' }));
-    $('cc-text').textContent = data.engine === 'gemini'
-      ? `An independent keyword/pattern engine scored this ${rc.score}/100 (${rc.verdict.replace('_', ' ').toLowerCase()}). ${agree ? 'Both layers agree.' : 'Gemini understands context the rule engine cannot, so its verdict is shown.'}`
+    $('cc-text').textContent = data.engine === 'grok'
+      ? `An independent keyword/pattern engine scored this ${rc.score}/100 (${rc.verdict.replace('_', ' ').toLowerCase()}). ${agree ? 'Both layers agree.' : 'Grok understands context the rule engine cannot, so its verdict is shown.'}`
       : `Rule engine score: ${rc.score}/100. Patterns matched:`;
     $('cc-list').replaceChildren(...(rc.signals.length
       ? rc.signals.map((s) => el('li', { text: `${TACTIC_LABELS[s.tactic]}: ${s.explanation}` }))
