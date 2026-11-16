@@ -1,0 +1,8 @@
+# Files NOT uploaded to Vercel
+.env
+.git
+node_modules
+docs
+tests
+*.zip
+*.md
