@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Satark AI · Digital Arrest &amp; Cyber Fraud Scam Detector</title>
-  <meta name="description" content="Check whether a call, SMS, WhatsApp message or screenshot is a digital arrest or cyber fraud scam. Powered by Google Gemini on Google Cloud Run.">
+  <meta name="description" content="Check whether a call, SMS, WhatsApp message or screenshot is a digital arrest or cyber fraud scam. Powered by xAI Grok on Vercel.">
   <meta name="theme-color" content="#0B0B0C">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +49,7 @@
       <div class="hero__copy">
         <p class="eyebrow"><span class="eyebrow__dot"></span>AI-Based Digital Arrest &amp; Cyber Fraud Scam Detection</p>
         <h1>Got a call from the “police”?<br><mark>Check it before you pay.</mark></h1>
-        <p class="lead">Paste a suspicious SMS, WhatsApp message or call transcript, or upload a screenshot. Satark AI uses <strong>Google Gemini</strong> running on <strong>Google Cloud Run</strong> to spot digital-arrest, KYC, courier, UPI and job scams in seconds, and tells you exactly what to do next.</p>
+        <p class="lead">Paste a suspicious SMS, WhatsApp message or call transcript, or upload a screenshot. Satark AI uses <strong>xAI Grok</strong> running on <strong>Vercel</strong> to spot digital-arrest, KYC, courier, UPI and job scams in seconds, and tells you exactly what to do next.</p>
         <ul class="hero__facts">
           <li><b>“Digital arrest”</b> is not a real legal procedure</li>
           <li><b>No agency</b> asks you to move money to a “safe account”</li>
@@ -97,7 +97,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5V19a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2.5M12 4v11m0-11-4 4m4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <b>Drop a screenshot here</b>
               <span>or click to browse · or paste with <kbd>Ctrl</kbd> + <kbd>V</kbd></span>
-              <small>PNG, JPG or WEBP · Gemini reads the text in the image</small>
+              <small>PNG, JPG or WEBP · Grok reads the text in the image</small>
             </div>
             <div class="drop__preview" id="drop-preview" hidden>
               <img id="preview-img" alt="Uploaded screenshot preview">
@@ -160,8 +160,8 @@
       <div class="state state--loading" id="state-loading" hidden>
         <div class="loader" aria-hidden="true"><span></span></div>
         <ol class="progress" id="progress">
-          <li>Sending securely to Google Cloud Run</li>
-          <li>Gemini is reading the content</li>
+          <li>Sending securely to Vercel</li>
+          <li>Grok is reading the content</li>
           <li>Matching known Indian scam patterns</li>
           <li>Preparing your safety advice</li>
         </ol>
@@ -249,13 +249,13 @@
         </li>
         <li>
           <span class="pipeline__n">02</span>
-          <h3>Google Cloud Run</h3>
-          <p>A serverless container receives the request over HTTPS, validates it, rate-limits it and runs the instant rule-engine check.</p>
+          <h3>Vercel</h3>
+          <p>The dashboard is served from Vercel's global edge network. A Node.js serverless function in Mumbai (bom1) receives the request over HTTPS, validates it, rate-limits it and runs the instant rule-engine check.</p>
         </li>
         <li>
           <span class="pipeline__n">03</span>
-          <h3>Gemini API</h3>
-          <p>Gemini (Google AI Studio) reads the text and image together and returns a structured JSON verdict, red flags and advice.</p>
+          <h3>xAI Grok API</h3>
+          <p>Grok reads the text and the screenshot together (vision) and returns a structured JSON verdict, red flags and advice in your language.</p>
         </li>
         <li>
           <span class="pipeline__n">04</span>
@@ -264,7 +264,7 @@
         </li>
       </ol>
       <div class="stack">
-        <span>Google Gemini API</span><span>Google AI Studio</span><span>Google Cloud Run</span><span>Secret Manager</span><span>Cloud Logging</span><span>Node.js</span>
+        <span>xAI Grok API</span><span>Grok vision</span><span>Vercel Functions</span><span>Vercel Edge Network</span><span>Encrypted env variables</span><span>Node.js</span>
       </div>
       <div class="livestats" id="livestats" hidden>
         <div><b id="st-total">0</b><span>messages checked</span></div>
@@ -303,7 +303,7 @@
           <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 6.5v8.7c0 7.4 5.1 13.6 12 15.8 6.9-2.2 12-8.4 12-15.8V6.5L16 2Z" fill="#FFD60A"/><path d="M16 9v9" stroke="#0B0B0C" stroke-width="3.2" stroke-linecap="round"/><circle cx="16" cy="23" r="1.9" fill="#0B0B0C"/></svg>
           <span class="brand__text">Satark<span>AI</span></span>
         </a>
-        <p>AI-Based Digital Arrest &amp; Cyber Fraud Scam Detection System.<br>Built with the Google Gemini API (Google AI Studio) on Google Cloud Run.</p>
+        <p>AI-Based Digital Arrest &amp; Cyber Fraud Scam Detection System.<br>Built with the xAI Grok API on Vercel.</p>
       </div>
       <div class="footer__help">
         <p><b>Need help now?</b></p>
