@@ -132,6 +132,11 @@
   body.compact .fig { width: 1100px; grid-template-columns: 1fr; }
   body.compact .notes { display: none; }
 
+  /* print mode (report): narrower frame = less shrinking on A4; see makePrintSafe() */
+  body.print .fig { width: 900px; grid-template-columns: 1fr; padding: 24px 20px 28px; }
+  body.print .notes { display: none; }
+  body.print .browser { box-shadow: 6px 6px 0 #C4C4C8; }
+
   /* annotation panel */
   .notes { border-left: 3px solid var(--ink); padding-left: 22px; display: flex; flex-direction: column; gap: 15px; }
   .notes h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; display: flex; justify-content: space-between; align-items: center; }
@@ -184,19 +189,18 @@
         <div class="meta-row"><span>Tip: Ctrl + Enter to analyse</span><span>773 / 8000</span></div>
         <div class="row rel" style="margin-bottom:14px"><span class="lbl">Answer in</span>
           <span class="chip on">English</span><span class="chip hi">हिन्दी</span><span class="chip kn">ಕನ್ನಡ</span>
-          <span class="n" style="top:-1px;left:318px">4</span></div>
+          <span class="n" style="position:relative;top:0;left:0;margin-left:8px">4</span></div>
         <div class="lbl" style="margin-bottom:8px">Try a demo example</div>
         <div class="row rel" style="row-gap:8px">
           <span class="chip ghost"><i class="d"></i>Digital arrest video call</span>
           <span class="chip ghost"><i class="d"></i>Courier parcel with drugs (IVR)</span>
-          <span class="chip ghost hover rel"><i class="d"></i>Bank KYC block SMS</span>
+          <span class="chip ghost hover rel"><i class="d"></i>Bank KYC block SMS<svg class="cursor" style="right:-14px;bottom:-24px"><use href="#hand"/></svg></span>
           <span class="chip ghost"><i class="d"></i>Electricity disconnection SMS</span>
           <span class="chip ghost"><i class="d"></i>Part-time job / task scam</span>
           <span class="chip ghost"><i class="d"></i>UPI “sent by mistake”</span>
           <span class="chip ghost"><i class="d o"></i>Genuine delivery update</span>
           <span class="chip ghost"><i class="d o"></i>Normal family message</span>
           <span class="n" style="top:-12px;left:-14px">5</span>
-          <svg class="cursor" style="top:14px;left:400px"><use href="#hand"/></svg>
         </div>
         <div class="cta">
           <div class="primary rel">Analyse for scams
@@ -265,9 +269,9 @@
             <span class="n inv" style="top:-12px;right:-26px">4</span>
           </div>
         </div>
-        <div class="sec rel">Summary<span class="n" style="top:-6px;left:76px">5</span></div>
+        <div class="sec rel">Summary<span class="n" style="position:relative;top:0;left:0;margin-left:4px">5</span></div>
         <p class="p">This is a classic “digital arrest” scam. The caller impersonates police and CBI officers, claims your Aadhaar is linked to money laundering and demands a transfer to a fake “RBI verification” account. No real Indian agency arrests people over video calls.</p>
-        <div class="sec rel">Red flags found <span class="cnt">5</span><span class="n" style="top:-6px;left:150px">6</span></div>
+        <div class="sec rel">Red flags found <span class="cnt">5</span><span class="n" style="position:relative;top:0;left:0;margin-left:4px">6</span></div>
         <div class="flag"><span class="tag">Fake authority</span><p class="quote">“This is Inspector R. K. Sharma, Cyber Crime Branch, Mumbai Police.”</p><p class="why">Impersonation of police and CBI to create instant fear.</p></div>
         <div class="flag"><span class="tag">Isolation / secrecy</span><p class="quote">“Do not tell anyone in your family or your bank.”</p><p class="why">Stops the victim from verifying the claim with others.</p></div>
         <div class="flag rel"><span class="tag">Payment demand</span><p class="quote">“Transfer Rs 4,85,000 to the RBI verification account.”</p><p class="why">Real agencies never ask citizens to move money to “prove innocence”.</p>
@@ -309,7 +313,7 @@
           </ul>
           <span class="n" style="top:-12px;left:-14px">2</span></div>
       </div>
-      <div class="sec rel">Details to include in your complaint<span class="n" style="top:-6px;left:300px">3</span></div>
+      <div class="sec rel">Details to include in your complaint<span class="n" style="position:relative;top:0;left:0;margin-left:4px">3</span></div>
       <div><span class="ind"><b>AMOUNT</b>Rs 2.8 crore</span><span class="ind"><b>AMOUNT</b>Rs 4,85,000</span><span class="ind"><b>ACCOUNT</b>A/c No: 50100234567812</span></div>
       <div class="cross rel" style="margin:8px 0 14px"><b>⊟ Rule-engine cross-check</b><span class="agree">agrees</span>
         <p class="why" style="margin-top:5px">An independent keyword / pattern engine scored this 100/100 (scam). Both layers agree.</p>
@@ -369,7 +373,7 @@
           <div class="rel"><div class="v__t"><svg width="20" height="20" style="color:#fff"><use href="#warn"/></svg>Scam detected</div><div class="v__c">KYC / bank account scam</div><div class="v__chips"><span>Confidence: high</span><span>Pretending to be: SBI</span></div>
           <span class="n inv" style="top:-12px;right:-30px">3</span></div>
         </div>
-        <div class="sec rel">Red flags read from the image <span class="cnt">4</span><span class="n" style="top:-6px;left:298px">4</span></div>
+        <div class="sec rel">Red flags read from the image <span class="cnt">4</span><span class="n" style="position:relative;top:0;left:0;margin-left:4px">4</span></div>
         <div class="flag"><span class="tag">Suspicious link</span><p class="quote">“Click: http://sbi-kyc-update.xyz/verify”</p><p class="why">Third-party .xyz domain instead of the official sbi.co.in website.</p></div>
         <div class="flag"><span class="tag">Data request</span><p class="quote">“Share the OTP received on your mobile with our executive.”</p><p class="why">Banks never ask customers to share an OTP.</p></div>
         <div class="sec">Details to include in your complaint</div>
@@ -431,5 +435,49 @@
   </aside>
 </section>
 
+<script>
+/* Print-safe pass for black-and-white printing of the report figures.
+   The figure is printed ~6.4 in wide, so 900 CSS px -> scale ~0.69.
+   MIN_PX = 13.5 css px  -> ~7 pt on paper (Latin);  MIN_INDIC = 15.5 -> ~8 pt. */
+window.makePrintSafe = function () {
+  document.body.classList.add('print');
+  const MIN_PX = 13.5, MIN_INDIC = 15.5;
+  const lum = (rgb) => { const m = rgb.match(/[\d.]+/g); if (!m) return null; const [r, g, b, a] = m.map(Number); if (a === 0) return null; return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  // luminance of the nearest painted background behind an element
+  const backdrop = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const v = lum(getComputedStyle(n).backgroundColor); if (v !== null) return v; } return 255; };
+  // measure everything first, then write, so changes do not cascade into later readings
+  const plan = [];
+  for (const el of document.querySelectorAll('.fig *')) {
+    const cs = getComputedStyle(el);
+    plan.push({ el, fs: parseFloat(cs.fontSize), c: lum(cs.color), dark: backdrop(el) < 100, indic: Boolean(el.closest('.hi, .kn')) });
+  }
+  for (const { el, fs, c, dark, indic } of plan) {
+    const min = indic ? MIN_INDIC : MIN_PX;
+    if (fs < min) el.style.setProperty('font-size', min + 'px', 'important');
+    // grey text: near-black on light backgrounds, white on black backgrounds
+    if (c !== null && c > 60 && c < 240) el.style.setProperty('color', dark ? '#FFFFFF' : '#2B2B2B', 'important');
+  }
+  for (const el of document.querySelectorAll('.fig *')) {
+    const cs = getComputedStyle(el);
+    // fills: very light greys fade on toner-saving printers -> mid-light grey
+    const bg = lum(cs.backgroundColor);
+    if (bg !== null && bg > 200 && bg < 250) el.style.setProperty('background-color', '#DCDCDE', 'important');
+    // borders: at least 2px so they survive scaling
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      const w = parseFloat(cs['border' + side + 'Width']);
+      if (w > 0 && w < 2) el.style.setProperty('border-' + side.toLowerCase() + '-width', '2px', 'important');
+      const bc = lum(cs['border' + side + 'Color']);
+      if (w > 0 && bc !== null && bc > 120 && bc < 250) el.style.setProperty('border-' + side.toLowerCase() + '-color', '#555558', 'important');
+    }
+  }
+  // placeholder bars: keep visible
+  document.querySelectorAll('.bar').forEach((b) => b.style.setProperty('background', '#BDBDC2', 'important'));
+  // narrower frame: floating tooltip / toast get their own line instead of covering content
+  document.querySelectorAll('.flag .tip').forEach((t) => Object.assign(t.style, { position: 'relative', top: 'auto', right: 'auto', left: 'auto', display: 'inline-block', marginTop: '12px' }));
+  document.querySelectorAll('.cta').forEach((c) => { c.style.flexWrap = 'wrap'; });
+  document.querySelectorAll('.cta .toast').forEach((t) => Object.assign(t.style, { position: 'relative', top: 'auto', right: 'auto', order: '5', marginTop: '6px' }));
+  document.querySelectorAll('.prog .s').forEach((s) => Object.assign(s.style, { width: '24px', height: '24px', flex: 'none' }));
+};
+</script>
 </body>
 </html>
