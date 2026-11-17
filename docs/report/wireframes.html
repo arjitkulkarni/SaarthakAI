@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Satark AI – annotated wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+Kannada:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#0B0B0C; --mid:#6B6B70; --soft:#BDBDC2; --line:#D9D9DC; --bg:#FFFFFF; --fill:#F2F2F3; --fill2:#E6E6E8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: Inter, 'Segoe UI', Arial, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+  .hi { font-family: 'Noto Sans Devanagari', 'Nirmala UI', sans-serif; }
+  .kn { font-family: 'Noto Sans Kannada', 'Nirmala UI', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', Consolas, monospace; }
+
+  /* ---------- figure frame ---------- */
+  .fig { width: 1400px; padding: 36px 40px 40px; display: grid; grid-template-columns: 1fr 360px; gap: 36px; border-bottom: 1px solid #fff; }
+  .fig__title { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 14px; border-bottom: 3px solid var(--ink); padding-bottom: 12px; }
+  .fig__title b { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .fig__title span { font: 500 13px 'JetBrains Mono', monospace; color: var(--mid); text-transform: uppercase; letter-spacing: .08em; }
+
+  /* ---------- browser chrome ---------- */
+  .browser { border: 2px solid var(--ink); border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 10px 10px 0 var(--fill2); }
+  .browser__bar { height: 40px; border-bottom: 2px solid var(--ink); display: flex; align-items: center; gap: 8px; padding: 0 14px; background: var(--fill); }
+  .dot { width: 11px; height: 11px; border: 2px solid var(--ink); border-radius: 50%; background: #fff; }
+  .url { margin-left: 14px; flex: 1; height: 24px; border: 1.5px solid var(--ink); border-radius: 6px; background: #fff; display: flex; align-items: center; gap: 8px; padding: 0 10px; font: 500 12px 'JetBrains Mono', monospace; }
+  .url svg { width: 11px; height: 11px; }
+
+  /* ---------- app skeleton ---------- */
+  .topbar { height: 52px; background: var(--ink); color: #fff; display: flex; align-items: center; padding: 0 22px; gap: 22px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; }
+  .logo i { width: 18px; height: 20px; background: #fff; clip-path: polygon(50% 0, 100% 18%, 100% 55%, 50% 100%, 0 55%, 0 18%); display: inline-block; }
+  .nav { display: flex; gap: 16px; font-size: 12.5px; color: #CFCFD3; }
+  .sp { flex: 1; }
+  .pill { border: 1.5px solid #fff; border-radius: 999px; padding: 5px 12px; font-size: 12px; display: flex; align-items: center; gap: 7px; }
+  .pill .live { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.25); }
+  .btn1930 { background: #fff; color: var(--ink); border-radius: 999px; padding: 6px 14px; font-weight: 800; font-size: 13px; }
+
+  .app { padding: 22px; background: #fff; }
+  .card { border: 2px solid var(--ink); border-radius: 12px; padding: 18px; background: #fff; position: relative; }
+  .card__h { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; margin-bottom: 14px; }
+  .step { width: 22px; height: 22px; border-radius: 6px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
+  .tabs { margin-left: auto; display: flex; border: 1.5px solid var(--ink); border-radius: 8px; overflow: hidden; font-size: 12px; font-weight: 600; }
+  .tabs span { padding: 5px 12px; }
+  .tabs .on { background: var(--ink); color: #fff; }
+  .textarea { border: 1.5px solid var(--ink); border-radius: 8px; padding: 12px; font-size: 12.5px; line-height: 1.55; color: #2A2A2E; background: var(--fill); min-height: 118px; position: relative; }
+  .caret { display: inline-block; width: 1.5px; height: 14px; background: var(--ink); vertical-align: -2px; animation: none; }
+  .meta-row { display: flex; justify-content: space-between; font: 500 11px 'JetBrains Mono', monospace; color: var(--mid); margin: 8px 0 12px; }
+  .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--mid); margin-right: 4px; }
+  .chip { border: 1.5px solid var(--ink); border-radius: 999px; padding: 4px 11px; font-size: 12px; font-weight: 600; background: #fff; }
+  .chip.on { background: var(--ink); color: #fff; }
+  .chip.ghost { border-color: var(--soft); color: #3A3A40; font-weight: 500; }
+  .chip.hover { outline: 2px dashed var(--ink); outline-offset: 3px; }
+  .chip .d { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); margin-right: 6px; vertical-align: 1px; }
+  .chip .d.o { background: #fff; border: 1.5px solid var(--ink); }
+  .cta { margin-top: 16px; display: flex; gap: 10px; }
+  .primary { flex: 1; background: var(--ink); color: #fff; border-radius: 10px; padding: 12px; text-align: center; font-weight: 700; font-size: 14px; position: relative; }
+  .secondary { border: 1.5px solid var(--ink); border-radius: 10px; padding: 12px 18px; font-weight: 600; font-size: 14px; background: #fff; }
+  .note { font-size: 11px; color: var(--mid); margin-top: 10px; display: flex; gap: 6px; align-items: center; }
+  .bar { height: 9px; border-radius: 5px; background: var(--fill2); margin: 7px 0; }
+
+  /* verdict */
+  .verdict { background: var(--ink); color: #fff; border-radius: 12px; padding: 16px 18px; display: flex; gap: 18px; align-items: center; position: relative; }
+  .gauge { width: 112px; height: 70px; position: relative; flex: none; }
+  .gauge svg { width: 112px; height: 70px; }
+  .gauge b { position: absolute; left: 0; right: 0; top: 24px; text-align: center; font-size: 28px; font-weight: 800; }
+  .gauge small { position: absolute; left: 0; right: 0; top: 56px; text-align: center; font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #BDBDC2; }
+  .v__t { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .v__c { font-size: 13px; font-weight: 600; margin: 3px 0 8px; color: #E6E6E8; }
+  .v__chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .v__chips span { border: 1.3px solid #fff; border-radius: 999px; padding: 3px 9px; font-size: 10.5px; font-weight: 600; }
+  .verdict.safe { background: #fff; color: var(--ink); border: 2px solid var(--ink); }
+  .verdict.safe .v__c { color: var(--mid); } .verdict.safe .v__chips span { border-color: var(--ink); }
+  .badge { border: 1.5px solid var(--ink); border-radius: 999px; padding: 3px 10px; font: 500 10.5px 'JetBrains Mono', monospace; margin-left: auto; display: flex; gap: 6px; align-items: center; background: var(--fill); }
+  .badge i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  .sec { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--mid); margin: 14px 0 7px; display: flex; align-items: center; gap: 8px; }
+  .sec .cnt { background: var(--ink); color: #fff; border-radius: 999px; padding: 0 7px; font-size: 10px; }
+  .p { font-size: 12.5px; line-height: 1.55; color: #2A2A2E; }
+  .flag { border: 1.5px solid var(--ink); border-left-width: 5px; border-radius: 8px; padding: 9px 11px; margin-bottom: 7px; background: #fff; }
+  .tag { display: inline-block; background: var(--ink); color: #fff; font-size: 9.5px; font-weight: 800; letter-spacing: .06em; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; }
+  .quote { font-size: 12px; font-weight: 600; margin: 6px 0 3px; line-height: 1.45; }
+  .why { font-size: 11px; color: var(--mid); line-height: 1.45; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ol li, .ul li { font-size: 12px; line-height: 1.45; margin-bottom: 7px; list-style: none; display: flex; gap: 8px; }
+  .ol .n { flex: none; width: 18px; height: 18px; border-radius: 5px; background: var(--ink); color: #fff; font-size: 10.5px; font-weight: 800; display: grid; place-items: center; }
+  .ul .x { flex: none; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; font-size: 10px; font-weight: 800; line-height: 1; }
+  .ind { display: inline-flex; gap: 6px; border: 1.3px solid var(--ink); border-radius: 6px; padding: 3px 8px; font: 500 11px 'JetBrains Mono', monospace; margin: 0 6px 6px 0; }
+  .ind b { font-family: Inter, sans-serif; font-size: 9px; letter-spacing: .08em; color: var(--mid); align-self: center; }
+  .report { border: 2px solid var(--ink); border-radius: 12px; padding: 13px; background: var(--fill); }
+  .report h4 { font-size: 14px; margin-bottom: 8px; }
+  .rlinks { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rlinks span { background: var(--ink); color: #fff; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 700; line-height: 1.2; }
+  .rlinks small { display: block; font-size: 9.5px; font-weight: 500; color: #CFCFD3; }
+  .cross { border: 1.5px dashed var(--ink); border-radius: 10px; padding: 10px 12px; font-size: 12px; }
+  .agree { border: 1.3px solid var(--ink); border-radius: 999px; padding: 1px 8px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+
+  /* progress */
+  .prog li { list-style: none; display: flex; gap: 10px; align-items: center; font-size: 12.5px; padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .prog .s { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; font-size: 10px; font-weight: 800; }
+  .prog .done .s { background: var(--ink); color: #fff; }
+  .prog .act { font-weight: 700; }
+  .prog .act .s { border-style: dashed; }
+  .prog .todo { color: var(--mid); } .prog .todo .s { border-color: var(--soft); }
+
+  /* dropzone + phone */
+  .drop { border: 2px dashed var(--ink); border-radius: 12px; padding: 14px; background: var(--fill); display: grid; place-items: center; gap: 10px; text-align: center; }
+  .phone { width: 210px; border: 2.5px solid var(--ink); border-radius: 26px; padding: 12px 10px; background: #fff; position: relative; }
+  .phone::before { content: ''; display: block; width: 60px; height: 6px; border-radius: 4px; background: var(--ink); margin: 0 auto 10px; }
+  .sms { background: var(--fill); border: 1.3px solid var(--ink); border-radius: 12px 12px 12px 3px; padding: 8px 9px; font-size: 10.5px; line-height: 1.45; margin-bottom: 7px; }
+  .sms u { text-decoration: underline; font-weight: 600; }
+  .sms-h { font-size: 10px; font-weight: 700; text-align: center; color: var(--mid); margin-bottom: 8px; }
+
+  /* interaction marks */
+  .n { position: absolute; width: 26px; height: 26px; border-radius: 50%; background: #fff; color: var(--ink); border: 2.5px solid var(--ink); font: 800 13px Inter, sans-serif; display: grid; place-items: center; z-index: 5; box-shadow: 0 0 0 3px #fff; }
+  .n.inv { background: var(--ink); color: #fff; border-color: #fff; box-shadow: 0 0 0 2px var(--ink); }
+  .rel { position: relative; }
+  .cursor { position: absolute; width: 26px; height: 32px; z-index: 6; }
+  .ripple { position: absolute; border: 2px solid var(--ink); border-radius: 50%; z-index: 4; }
+  .tip { position: absolute; z-index: 7; background: #fff; color: var(--ink); border: 2px solid var(--ink); border-radius: 8px; padding: 6px 9px; font: 500 11px 'JetBrains Mono', monospace; white-space: nowrap; box-shadow: 4px 4px 0 var(--fill2); }
+  .tip::after { content: ''; position: absolute; width: 10px; height: 10px; background: #fff; border-left: 2px solid var(--ink); border-top: 2px solid var(--ink); transform: rotate(45deg); top: -7px; left: 18px; }
+  .toast { position: absolute; z-index: 7; background: var(--ink); color: #fff; border-radius: 10px; padding: 9px 14px; font-size: 12px; font-weight: 600; display: flex; gap: 8px; align-items: center; box-shadow: 5px 5px 0 var(--fill2); }
+  .phones .phone { display:flex; flex-direction:column; }
+  .phones .phone .foot { margin-top:auto; padding-top:10px; display:grid; gap:6px; }
+  .phones .phone .foot div { border:1.5px solid var(--ink); border-radius:8px; padding:6px 8px; font-size:10.5px; font-weight:700; display:flex; justify-content:space-between; }
+  .phones .phone .foot .dark { background:var(--ink); color:#fff; }
+  .tip--left::after { left:auto; right:18px; }
+  .flow-arrow { display: grid; place-items: center; font: 700 11px 'JetBrains Mono', monospace; color: var(--ink); gap: 6px; text-align: center; }
+  .flow-arrow svg { width: 70px; height: 24px; }
+
+  /* compact mode (report): screen only, explanations go into the document text */
+  body.compact .fig { width: 1100px; grid-template-columns: 1fr; }
+  body.compact .notes { display: none; }
+
+  /* annotation panel */
+  .notes { border-left: 3px solid var(--ink); padding-left: 22px; display: flex; flex-direction: column; gap: 15px; }
+  .notes h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; display: flex; justify-content: space-between; align-items: center; }
+  .notes h3 em { font: 500 11px 'JetBrains Mono', monospace; font-style: normal; color: var(--mid); letter-spacing: 0; text-transform: none; }
+  .note-i { display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
+  .note-i .k { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid var(--ink); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+  .note-i b { display: block; font-size: 14px; margin-bottom: 3px; }
+  .note-i p { font-size: 12.5px; line-height: 1.5; color: #3A3A40; }
+  .note-i code { font: 500 11px 'JetBrains Mono', monospace; background: var(--fill); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+  .legend { margin-top: auto; border: 1.5px dashed var(--ink); border-radius: 10px; padding: 10px 12px; font-size: 11px; color: #3A3A40; display: grid; gap: 6px; }
+  .legend div { display: flex; align-items: center; gap: 8px; }
+  .legend .sw { width: 22px; display: grid; place-items: center; }
+</style>
+</head>
+<body>
+
+<!-- reusable cursor -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="cur" viewBox="0 0 26 32"><path d="M2 2 L2 26 L8.5 20 L13 30 L17.5 28 L13 18.5 L22 18.5 Z" fill="#fff" stroke="#0B0B0C" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+    <symbol id="hand" viewBox="0 0 26 32"><path d="M9 14V4.5a2.2 2.2 0 0 1 4.4 0V13l.2-2.2a2.1 2.1 0 0 1 4.2.3l-.1 2 .2-1.2a2 2 0 0 1 4 .5v8.5c0 5-3 8.6-8 8.6h-1.3c-3 0-5-1.4-6.6-4L2.6 19a2.1 2.1 0 0 1 3.4-2.4L9 20Z" fill="#fff" stroke="#0B0B0C" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="lock" viewBox="0 0 12 12"><rect x="2" y="5" width="8" height="6" rx="1.2" fill="#0B0B0C"/><path d="M3.8 5V3.6a2.2 2.2 0 0 1 4.4 0V5" fill="none" stroke="#0B0B0C" stroke-width="1.4"/></symbol>
+    <symbol id="warn" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z" fill="currentColor"/><path d="M12 10v4" stroke="#0B0B0C" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17" r="1.3" fill="#0B0B0C"/></symbol>
+  </defs>
+</svg>
+
+<!-- ================================================================ FIG A: INPUT -->
+<section class="fig" id="fig-input">
+  <div class="fig__title"><b>Screen 1 · Submit a suspicious message</b><span>Input panel · desktop</span></div>
+  <div class="browser">
+    <div class="browser__bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>
+      <div class="url"><svg><use href="#lock"/></svg>https://satark-ai-murex.vercel.app</div></div>
+    <div class="topbar">
+      <span class="logo"><i></i>Satark AI</span>
+      <span class="nav"><span>Analyse</span><span>How it works</span><span>Stay safe</span></span>
+      <span class="sp"></span>
+      <span class="pill rel"><i class="live"></i>Grok online · Vercel<span class="n inv" style="top:-14px;left:-14px">1</span></span>
+      <span class="btn1930">1930</span>
+    </div>
+    <div class="app rel" style="padding-bottom:30px">
+      <div class="tip" style="top:8px; right:96px">model: grok-4.20 · region: bom1</div>
+      <div class="card" style="margin-top:34px">
+        <div class="card__h"><span class="step">1</span>What did you receive?
+          <span class="rel" style="margin-left:auto"><span class="tabs" style="margin-left:0"><span class="on">Message</span><span>Screenshot</span></span><span class="n" style="top:-16px;right:-16px">2</span></span></div>
+        <div class="textarea rel"><span class="n" style="top:-13px;left:-13px">3</span>
+          This is Inspector R. K. Sharma, Cyber Crime Branch, Mumbai Police. Your Aadhaar number has been used to open a bank account used for money laundering of Rs 2.8 crore…<br>
+          You are now under digital arrest. Do not disconnect the video call. Do not tell anyone in your family.<br>
+          To prove you are innocent, transfer Rs 4,85,000 to the RBI verification account below…<span class="caret"></span>
+        </div>
+        <div class="meta-row"><span>Tip: Ctrl + Enter to analyse</span><span>773 / 8000</span></div>
+        <div class="row rel" style="margin-bottom:14px"><span class="lbl">Answer in</span>
+          <span class="chip on">English</span><span class="chip hi">हिन्दी</span><span class="chip kn">ಕನ್ನಡ</span>
+          <span class="n" style="top:-1px;left:318px">4</span></div>
+        <div class="lbl" style="margin-bottom:8px">Try a demo example</div>
+        <div class="row rel" style="row-gap:8px">
+          <span class="chip ghost"><i class="d"></i>Digital arrest video call</span>
+          <span class="chip ghost"><i class="d"></i>Courier parcel with drugs (IVR)</span>
+          <span class="chip ghost hover rel"><i class="d"></i>Bank KYC block SMS</span>
+          <span class="chip ghost"><i class="d"></i>Electricity disconnection SMS</span>
+          <span class="chip ghost"><i class="d"></i>Part-time job / task scam</span>
+          <span class="chip ghost"><i class="d"></i>UPI “sent by mistake”</span>
+          <span class="chip ghost"><i class="d o"></i>Genuine delivery update</span>
+          <span class="chip ghost"><i class="d o"></i>Normal family message</span>
+          <span class="n" style="top:-12px;left:-14px">5</span>
+          <svg class="cursor" style="top:14px;left:400px"><use href="#hand"/></svg>
+        </div>
+        <div class="cta">
+          <div class="primary rel">Analyse for scams
+            <span class="ripple" style="width:46px;height:46px;left:calc(50% + 70px);top:-1px"></span>
+            <span class="ripple" style="width:26px;height:26px;left:calc(50% + 80px);top:9px"></span>
+            <svg class="cursor" style="top:14px;left:calc(50% + 88px)"><use href="#cur"/></svg>
+            <span class="n inv" style="top:-13px;left:-13px">6</span></div>
+          <div class="secondary">Clear</div>
+        </div>
+        <div class="note"><svg width="11" height="11"><use href="#lock"/></svg>Content is analysed in memory over HTTPS and is not stored.</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <h3>What the user sees <em>Fig. A</em></h3>
+    <div class="note-i"><span class="k">1</span><div><b>Live status</b><p>On load the page calls <code>GET /api/health</code>. The pill confirms Grok is configured and the app is running on Vercel; hovering shows the model and region.</p></div></div>
+    <div class="note-i"><span class="k">2</span><div><b>Two input modes</b><p>Paste the text of an SMS, WhatsApp message or call transcript, or switch to <strong>Screenshot</strong> to upload / paste an image.</p></div></div>
+    <div class="note-i"><span class="k">3</span><div><b>Message box</b><p>Up to 8,000 characters. The content is treated only as data, so instructions hidden inside a scam message are ignored.</p></div></div>
+    <div class="note-i"><span class="k">4</span><div><b>Answer language</b><p>English, Hindi or Kannada. Grok writes the summary and advice in the chosen language.</p></div></div>
+    <div class="note-i"><span class="k">5</span><div><b>Demo examples</b><p>Six real-world scam scripts and two genuine messages. Hover and click to load one into the box.</p></div></div>
+    <div class="note-i"><span class="k">6</span><div><b>Analyse</b><p>Sends <code>POST /api/analyze</code> over HTTPS to the Vercel Function in Mumbai (bom1).</p></div></div>
+    <div class="legend">
+      <div><span class="sw"><svg width="16" height="20"><use href="#cur"/></svg></span>Click · <span class="sw"><svg width="16" height="20"><use href="#hand"/></svg></span>Hover</div>
+      <div><span class="sw"><span style="width:18px;height:12px;border:2px dashed #0B0B0C;border-radius:4px"></span></span>Hover state</div>
+    </div>
+  </aside>
+</section>
+
+<!-- ================================================================ FIG B: VERDICT -->
+<section class="fig" id="fig-verdict">
+  <div class="fig__title"><b>Screen 2 · AI verdict with evidence</b><span>Result panel · after Grok replies</span></div>
+  <div style="display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start">
+    <div>
+      <div class="card">
+        <div class="card__h"><span class="step">2</span>Analysing…</div>
+        <ul class="prog">
+          <li class="done"><span class="s">✓</span>Checking scam patterns</li>
+          <li class="done"><span class="s">✓</span>Sending securely to Vercel</li>
+          <li class="act"><span class="s">3</span>Grok is reading the content</li>
+          <li class="todo"><span class="s">4</span>Preparing your advice</li>
+        </ul>
+        <div class="bar" style="width:70%;background:var(--ink);margin-top:14px"></div>
+        <div class="bar" style="width:100%"></div>
+        <span class="n" style="top:-13px;left:-13px">1</span>
+      </div>
+      <div class="flow-arrow" style="margin-top:18px">
+        <svg viewBox="0 0 70 24"><path d="M2 12h60" stroke="#0B0B0C" stroke-width="2.4"/><path d="M56 5l10 7-10 7" fill="none" stroke="#0B0B0C" stroke-width="2.4"/></svg>
+        ~2–6 s later<br>(JSON validated)
+      </div>
+    </div>
+    <div class="browser">
+      <div class="browser__bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div class="url"><svg><use href="#lock"/></svg>satark-ai-murex.vercel.app/#result</div></div>
+      <div class="app">
+        <div class="card__h" style="margin-bottom:12px"><span class="step">2</span>Scam analysis
+          <span class="badge rel"><i></i>xAI Grok · grok-4.20 · 6.4 s<span class="n" style="top:-22px;right:-22px">2</span></span></div>
+        <div class="verdict">
+          <div class="gauge rel">
+            <svg viewBox="0 0 112 70"><path d="M10 62a46 46 0 0 1 92 0" fill="none" stroke="#3A3A40" stroke-width="11" stroke-linecap="round"/><path d="M10 62a46 46 0 0 1 90.5-7" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/></svg>
+            <b>95</b><small>/100 RISK</small>
+            <span class="n inv" style="top:-12px;left:-12px">3</span>
+          </div>
+          <div class="rel">
+            <div class="v__t"><svg width="20" height="20" style="color:#fff"><use href="#warn"/></svg>Scam detected</div>
+            <div class="v__c">Digital arrest scam</div>
+            <div class="v__chips"><span>Confidence: high</span><span>Pretending to be: Mumbai Police / CBI / RBI</span></div>
+            <span class="n inv" style="top:-12px;right:-26px">4</span>
+          </div>
+        </div>
+        <div class="sec rel">Summary<span class="n" style="top:-6px;left:76px">5</span></div>
+        <p class="p">This is a classic “digital arrest” scam. The caller impersonates police and CBI officers, claims your Aadhaar is linked to money laundering and demands a transfer to a fake “RBI verification” account. No real Indian agency arrests people over video calls.</p>
+        <div class="sec rel">Red flags found <span class="cnt">5</span><span class="n" style="top:-6px;left:150px">6</span></div>
+        <div class="flag"><span class="tag">Fake authority</span><p class="quote">“This is Inspector R. K. Sharma, Cyber Crime Branch, Mumbai Police.”</p><p class="why">Impersonation of police and CBI to create instant fear.</p></div>
+        <div class="flag"><span class="tag">Isolation / secrecy</span><p class="quote">“Do not tell anyone in your family or your bank.”</p><p class="why">Stops the victim from verifying the claim with others.</p></div>
+        <div class="flag rel"><span class="tag">Payment demand</span><p class="quote">“Transfer Rs 4,85,000 to the RBI verification account.”</p><p class="why">Real agencies never ask citizens to move money to “prove innocence”.</p>
+          <div class="tip tip--left" style="top:7px;right:10px">tactic: PAYMENT_DEMAND · evidence = exact quote</div></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <h3>How to read it <em>Fig. B</em></h3>
+    <div class="note-i"><span class="k">1</span><div><b>Progress</b><p>The rule engine runs instantly while Grok analyses the message; each stage is ticked off as it completes.</p></div></div>
+    <div class="note-i"><span class="k">2</span><div><b>Engine badge</b><p>Shows which engine answered (xAI Grok or the offline rule engine), the model and the response time.</p></div></div>
+    <div class="note-i"><span class="k">3</span><div><b>Risk gauge</b><p>Score 0–100. 0–29 Likely safe, 30–59 Suspicious, 60–100 Scam. The verdict is always kept consistent with the score.</p></div></div>
+    <div class="note-i"><span class="k">4</span><div><b>Category &amp; impersonation</b><p>One of 15 scam types and the organisation the scammer pretends to be.</p></div></div>
+    <div class="note-i"><span class="k">5</span><div><b>Plain-language summary</b><p>2–3 sentences a non-technical person can understand, in the chosen language.</p></div></div>
+    <div class="note-i"><span class="k">6</span><div><b>Quoted red flags</b><p>Each flag quotes the exact sentence from the message and names the manipulation tactic, so the user learns to spot it next time.</p></div></div>
+  </aside>
+</section>
+
+<!-- ================================================================ FIG C: ACTIONS -->
+<section class="fig" id="fig-actions">
+  <div class="fig__title"><b>Screen 3 · What to do next and how to report</b><span>Result panel · lower half</span></div>
+  <div class="browser">
+    <div class="browser__bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div class="url"><svg><use href="#lock"/></svg>satark-ai-murex.vercel.app/#result</div></div>
+    <div class="app rel">
+      <div class="cols">
+        <div class="rel"><div class="sec">What to do now</div>
+          <ul class="ol">
+            <li><span class="n" style="position:static;width:18px;height:18px;border-radius:5px;background:#0B0B0C;color:#fff;border:0;box-shadow:none;font-size:10.5px">1</span>Do not transfer any money and disconnect the call.</li>
+            <li><span class="n" style="position:static;width:18px;height:18px;border-radius:5px;background:#0B0B0C;color:#fff;border:0;box-shadow:none;font-size:10.5px">2</span>Call 1930 or file a complaint at cybercrime.gov.in.</li>
+            <li><span class="n" style="position:static;width:18px;height:18px;border-radius:5px;background:#0B0B0C;color:#fff;border:0;box-shadow:none;font-size:10.5px">3</span>Report the number on Sanchar Saathi – Chakshu.</li>
+            <li><span class="n" style="position:static;width:18px;height:18px;border-radius:5px;background:#0B0B0C;color:#fff;border:0;box-shadow:none;font-size:10.5px">4</span>Tell your family and your bank about the call.</li>
+          </ul>
+          <span class="n" style="top:-12px;left:-14px">1</span></div>
+        <div class="rel"><div class="sec">Do not</div>
+          <ul class="ul">
+            <li><span class="x">✕</span>Do not send money to the given account.</li>
+            <li><span class="x">✕</span>Do not stay on the video call or keep the camera on.</li>
+            <li><span class="x">✕</span>Do not share OTPs, Aadhaar or bank details.</li>
+          </ul>
+          <span class="n" style="top:-12px;left:-14px">2</span></div>
+      </div>
+      <div class="sec rel">Details to include in your complaint<span class="n" style="top:-6px;left:300px">3</span></div>
+      <div><span class="ind"><b>AMOUNT</b>Rs 2.8 crore</span><span class="ind"><b>AMOUNT</b>Rs 4,85,000</span><span class="ind"><b>ACCOUNT</b>A/c No: 50100234567812</span></div>
+      <div class="cross rel" style="margin:8px 0 14px"><b>⊟ Rule-engine cross-check</b><span class="agree">agrees</span>
+        <p class="why" style="margin-top:5px">An independent keyword / pattern engine scored this 100/100 (scam). Both layers agree.</p>
+        <span class="n" style="top:-13px;right:-13px">4</span></div>
+      <div class="report rel"><h4>Report cyber fraud</h4>
+        <div class="rlinks"><span>1930<small>National Cyber Crime Helpline</small></span><span>cybercrime.gov.in<small>Report online</small></span><span>sancharsaathi.gov.in<small>Report fraud calls / SMS</small></span></div>
+        <span class="n" style="top:-13px;left:-13px">5</span></div>
+      <div class="cta rel">
+        <div class="primary rel" style="flex:none;padding:11px 54px 11px 18px">Copy complaint draft
+          <span class="ripple" style="width:40px;height:40px;right:6px;top:0px"></span>
+          <svg class="cursor" style="top:12px;right:2px"><use href="#cur"/></svg></div>
+        <div class="secondary">Print / Save PDF</div><div class="secondary">Check another</div>
+        <span class="n inv" style="top:-13px;left:-13px">6</span>
+        <div class="toast" style="right:0;top:4px">✓ Complaint draft copied – paste it at cybercrime.gov.in</div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <h3>Turning a verdict into action <em>Fig. C</em></h3>
+    <div class="note-i"><span class="k">1</span><div><b>What to do now</b><p>3–5 concrete, India-specific steps written by Grok for this exact message.</p></div></div>
+    <div class="note-i"><span class="k">2</span><div><b>Do not</b><p>Short warnings that break the scammer’s script: no payment, no OTP, no staying on the call.</p></div></div>
+    <div class="note-i"><span class="k">3</span><div><b>Extracted indicators</b><p>The rule engine pulls out amounts, account numbers, UPI IDs, phone numbers and links for the complaint.</p></div></div>
+    <div class="note-i"><span class="k">4</span><div><b>Cross-check (expandable)</b><p>A second, independent layer. If Grok is ever unreachable, this engine answers instead, so the user always gets a result.</p></div></div>
+    <div class="note-i"><span class="k">5</span><div><b>Official channels</b><p>1930, cybercrime.gov.in and Sanchar Saathi are linked from every result.</p></div></div>
+    <div class="note-i"><span class="k">6</span><div><b>One-click complaint</b><p>Copies a ready complaint (type, verdict, red flags, suspect details, original message) to the clipboard; a toast confirms it.</p></div></div>
+  </aside>
+</section>
+
+<!-- ================================================================ FIG D: SCREENSHOT / VISION -->
+<section class="fig" id="fig-vision">
+  <div class="fig__title"><b>Screen 4 · Screenshot analysis (Grok vision)</b><span>Upload → read → verdict</span></div>
+  <div style="display:grid;grid-template-columns:300px 110px 1fr;align-items:center;gap:6px">
+    <div class="card">
+      <div class="card__h"><span class="step">1</span>What did you receive?</div>
+      <div class="tabs" style="margin:0 0 12px 0;width:max-content"><span>Message</span><span class="on">Screenshot</span></div>
+      <div class="drop rel">
+        <div class="phone">
+          <div class="sms-h">+91 98XXX 77310 · Unknown</div>
+          <div class="sms">Dear SBI Customer, your YONO account will be blocked today due to incomplete KYC. Update your PAN immediately to avoid suspension.</div>
+          <div class="sms">Click: <u>http://sbi-kyc-update.xyz/verify</u></div>
+          <div class="sms">Share the OTP received on your mobile with our executive. -Team SBI</div>
+        </div>
+        <span style="font-size:11px;color:#6B6B70">sample-scam-sms.png · drag, drop or Ctrl+V</span>
+        <span class="n" style="top:-13px;left:-13px">1</span>
+      </div>
+    </div>
+    <div class="flow-arrow rel">
+      <svg viewBox="0 0 70 24"><path d="M2 12h60" stroke="#0B0B0C" stroke-width="2.4"/><path d="M56 5l10 7-10 7" fill="none" stroke="#0B0B0C" stroke-width="2.4"/></svg>
+      JPEG ≤ 1600 px<br>base64 → Grok
+      <span class="n" style="top:-34px;left:40px">2</span>
+    </div>
+    <div class="browser">
+      <div class="browser__bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div class="url"><svg><use href="#lock"/></svg>satark-ai-murex.vercel.app/#result</div></div>
+      <div class="app">
+        <div class="verdict">
+          <div class="gauge"><svg viewBox="0 0 112 70"><path d="M10 62a46 46 0 0 1 92 0" fill="none" stroke="#3A3A40" stroke-width="11" stroke-linecap="round"/><path d="M10 62a46 46 0 0 1 82-25" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/></svg><b>85</b><small>/100 RISK</small></div>
+          <div class="rel"><div class="v__t"><svg width="20" height="20" style="color:#fff"><use href="#warn"/></svg>Scam detected</div><div class="v__c">KYC / bank account scam</div><div class="v__chips"><span>Confidence: high</span><span>Pretending to be: SBI</span></div>
+          <span class="n inv" style="top:-12px;right:-30px">3</span></div>
+        </div>
+        <div class="sec rel">Red flags read from the image <span class="cnt">4</span><span class="n" style="top:-6px;left:298px">4</span></div>
+        <div class="flag"><span class="tag">Suspicious link</span><p class="quote">“Click: http://sbi-kyc-update.xyz/verify”</p><p class="why">Third-party .xyz domain instead of the official sbi.co.in website.</p></div>
+        <div class="flag"><span class="tag">Data request</span><p class="quote">“Share the OTP received on your mobile with our executive.”</p><p class="why">Banks never ask customers to share an OTP.</p></div>
+        <div class="sec">Details to include in your complaint</div>
+        <span class="ind"><b>LINK</b>http://sbi-kyc-update.xyz/verify</span>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">
+    <h3>Multimodal flow <em>Fig. D</em></h3>
+    <div class="note-i"><span class="k">1</span><div><b>Upload or paste</b><p>Users who cannot copy text simply drop or paste a screenshot of the SMS / WhatsApp chat.</p></div></div>
+    <div class="note-i"><span class="k">2</span><div><b>Prepared in the browser</b><p>The image is resized and compressed to JPEG so the request stays under Vercel’s 4.5 MB limit, then sent as a base64 data URL.</p></div></div>
+    <div class="note-i"><span class="k">3</span><div><b>Grok reads the image</b><p>Grok’s vision extracts the visible text and judges it like a typed message: here Scam 85/100, KYC / bank scam.</p></div></div>
+    <div class="note-i"><span class="k">4</span><div><b>Evidence from pixels</b><p>Red flags quote the text found in the screenshot, including the fake link, which is also listed for the complaint.</p></div></div>
+  </aside>
+</section>
+
+<!-- ================================================================ FIG E: LANGUAGES + MOBILE -->
+<section class="fig" id="fig-lang">
+  <div class="fig__title"><b>Screen 5 · Any language, any phone</b><span>Mobile view · EN / HI / KN · genuine message</span></div>
+  <div class="phones" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:stretch">
+    <div class="phone rel" style="width:auto">
+      <div class="sms-h">English</div>
+      <div class="verdict" style="padding:10px;gap:10px"><div style="font-size:24px;font-weight:800">95</div><div><div class="v__t" style="font-size:14px">Scam detected</div><div class="v__c" style="font-size:11px;margin:0">Digital arrest scam</div></div></div>
+      <p class="p" style="font-size:11px;margin-top:8px">This is a classic “digital arrest” scam. No real Indian agency arrests people over video calls or asks for money transfers.</p>
+      <div class="bar"></div><div class="bar" style="width:70%"></div>
+      <div class="flag" style="margin-top:10px;padding:7px 9px"><span class="tag">Fake authority</span><p class="quote " style="font-size:10.5px">“You are now under digital arrest.”</p></div><div class="foot"><div>What to do now <span>›</span></div><div class="dark">1930 · cybercrime.gov.in <span>☎</span></div></div>
+      <span class="n" style="top:-12px;left:-12px">1</span>
+    </div>
+    <div class="phone rel" style="width:auto">
+      <div class="sms-h">हिन्दी</div>
+      <div class="verdict" style="padding:10px;gap:10px"><div style="font-size:24px;font-weight:800">95</div><div><div class="v__t" style="font-size:14px">Scam detected</div><div class="v__c" style="font-size:11px;margin:0">Digital arrest scam</div></div></div>
+      <p class="p hi" style="font-size:11.5px;margin-top:8px">यह एक क्लासिक डिजिटल अरेस्ट घोटाला है। भारतीय कानून में डिजिटल अरेस्ट जैसी कोई प्रक्रिया नहीं है। कोई भी सरकारी एजेंसी वीडियो कॉल पर अरेस्ट नहीं करती।</p>
+      <div class="flag" style="margin-top:10px;padding:7px 9px"><span class="tag">Isolation / secrecy</span><p class="quote " style="font-size:10.5px">“Do not tell anyone in your family.”</p></div><div class="foot"><div>What to do now <span>›</span></div><div class="dark">1930 · cybercrime.gov.in <span>☎</span></div></div>
+      <span class="n" style="top:-12px;left:-12px">2</span>
+    </div>
+    <div class="phone rel" style="width:auto">
+      <div class="sms-h">ಕನ್ನಡ</div>
+      <div class="verdict" style="padding:10px;gap:10px"><div style="font-size:24px;font-weight:800">85</div><div><div class="v__t" style="font-size:14px">Scam detected</div><div class="v__c" style="font-size:11px;margin:0">KYC / bank scam</div></div></div>
+      <p class="p kn" style="font-size:11.5px;margin-top:8px">ಈ ಸಂದೇಶವು ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಖಾತೆಯನ್ನು ಕೆವೈಸಿ ಅಪೂರ್ಣತೆಯಿಂದಾಗಿ ತಡೆಹಿಡಿಯುವುದಾಗಿ ಬೆದರಿಕೆ ಹಾಕುತ್ತದೆ. ಇದು ಸಾಮಾನ್ಯ ಬ್ಯಾಂಕ್ ಕೆವೈಸಿ ವಂಚನೆಯ ರೂಪವಾಗಿದೆ.</p>
+      <div class="flag" style="margin-top:10px;padding:7px 9px"><span class="tag">Suspicious link</span><p class="quote " style="font-size:10.5px">“http://kyc-update-bank.xyz/verify”</p></div><div class="foot"><div>What to do now <span>›</span></div><div class="dark">1930 · cybercrime.gov.in <span>☎</span></div></div>
+      <span class="n" style="top:-12px;left:-12px">3</span>
+    </div>
+    <div class="phone rel" style="width:auto">
+      <div class="sms-h">Genuine message</div>
+      <div class="verdict safe" style="padding:10px;gap:10px"><div style="font-size:24px;font-weight:800">5</div><div><div class="v__t" style="font-size:14px">✓ Likely safe</div><div class="v__c" style="font-size:11px;margin:0">No scam pattern detected</div></div></div>
+      <p class="p" style="font-size:11px;margin-top:8px">A normal, affectionate family message with no threats, money demands, links or requests for personal information.</p>
+      <div class="bar"></div><div class="bar" style="width:60%"></div>
+      <div class="flag" style="margin-top:10px;padding:7px 9px;border-left-width:1.5px"><p class="why" style="font-size:10.5px">✓ No red flags were found in this content.</p></div><div class="foot"><div>Stay alert tips <span>›</span></div><div class="dark">Check another <span>↺</span></div></div>
+      <span class="ripple" style="width:40px;height:40px;right:36px;bottom:6px"></span><svg class="cursor" style="right:40px;bottom:2px"><use href="#hand"/></svg>
+      <span class="n" style="top:-12px;left:-12px">4</span>
+    </div>
+  </div>
+  <aside class="notes">
+    <h3>Reach and calibration <em>Fig. E</em></h3>
+    <div class="note-i"><span class="k">1</span><div><b>Mobile first</b><p>Opens in any phone browser with no app install; the layout stacks into one column on small screens.</p></div></div>
+    <div class="note-i"><span class="k">2</span><div><b>Hindi</b><p>The same digital-arrest message explained in Hindi. Red-flag quotes stay in the original language as evidence.</p></div></div>
+    <div class="note-i"><span class="k">3</span><div><b>Kannada</b><p>Explanations for regional-language users, who are often targeted with English-language threats.</p></div></div>
+    <div class="note-i"><span class="k">4</span><div><b>Not everything is a scam</b><p>Genuine messages score low (5/100 here). On the 8 demo messages Grok was correct 8 out of 8 times.</p></div></div>
+  </aside>
+</section>
+
+</body>
+</html>
