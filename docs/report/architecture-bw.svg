@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1660 860" width="1660" height="860" font-family="Inter, 'Segoe UI', Arial, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#0B0B0C"/>
+    </marker>
+    <style>
+      .t{fill:#0B0B0C}.w{fill:#fff}.y{fill:#FFFFFF}.m{fill:#55555C}
+      .h{font-size:22px;font-weight:800}.s{font-size:16px;font-weight:600}.x{font-size:14.5px}.lbl{font-size:14px;font-weight:700}
+      .arrow{stroke:#0B0B0C;stroke-width:2.6;fill:none;marker-end:url(#ah)}
+    </style>
+  </defs>
+  <rect width="1660" height="860" fill="#fff"/>
+
+  <!-- Title -->
+  <text x="40" y="52" class="t" font-size="30" font-weight="800">Satark AI: System Architecture</text>
+  <text x="40" y="82" class="m x">AI-Based Digital Arrest &amp; Cyber Fraud Scam Detection System · xAI Grok API on Vercel</text>
+  <rect x="0" y="100" width="1660" height="8" fill="#0B0B0C"/>
+
+  <!-- User / input -->
+  <rect x="40" y="170" width="250" height="230" rx="16" fill="#fff" stroke="#0B0B0C" stroke-width="2.5"/>
+  <rect x="40" y="170" width="250" height="52" rx="16" fill="#0B0B0C"/><rect x="40" y="200" width="250" height="22" fill="#0B0B0C"/>
+  <text x="60" y="203" class="y h">Citizen / User</text>
+  <text x="60" y="252" class="t s">Browser · mobile / laptop</text>
+  <text x="60" y="285" class="t x">• Suspicious SMS / WhatsApp</text>
+  <text x="60" y="310" class="t x">• Call transcript (“officer”)</text>
+  <text x="60" y="335" class="t x">• Screenshot (image)</text>
+  <text x="60" y="360" class="t x">• Answer language:</text>
+  <text x="74" y="382" class="t x">English / Hindi / Kannada</text>
+
+  <!-- Result dashboard -->
+  <rect x="40" y="470" width="250" height="300" rx="16" fill="#0B0B0C"/>
+  <text x="60" y="508" class="y h">Result Dashboard</text>
+  <text x="60" y="545" class="w x">• Verdict + risk score 0–100</text>
+  <text x="60" y="572" class="w x">• Scam category</text>
+  <text x="60" y="599" class="w x">• Red flags quoted from</text>
+  <text x="74" y="620" class="w x">the message</text>
+  <text x="60" y="647" class="w x">• What to do / Do NOT</text>
+  <text x="60" y="674" class="w x">• Complaint draft</text>
+  <text x="60" y="701" class="w x">• 1930 · cybercrime.gov.in</text>
+  <text x="60" y="740" class="y lbl">Shown to the user</text>
+
+  <!-- Vercel platform -->
+  <rect x="350" y="130" width="830" height="660" rx="20" fill="#FFFFFF" stroke="#0B0B0C" stroke-width="2" stroke-dasharray="10 8"/>
+  <text x="375" y="165" class="t s">Vercel platform · Edge Network + Functions · region bom1 (Mumbai)</text>
+
+  <!-- Vercel Function -->
+  <rect x="390" y="190" width="750" height="390" rx="16" fill="#EDEDED" stroke="#0B0B0C" stroke-width="2.5"/>
+  <text x="415" y="228" class="t h">Vercel Function: “satark-ai” (api/index.js)</text>
+  <text x="415" y="252" class="t x">Serverless Node.js 22 · HTTPS · automatic scaling · 60 s limit</text>
+  <g>
+    <rect x="415" y="270" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
+    <text x="435" y="301" class="t s">Dashboard on Edge CDN (HTML / CSS / JS) + REST API  ·  POST /api/analyze</text>
+    <rect x="415" y="330" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
+    <circle cx="442" cy="355" r="14" fill="#0B0B0C"/><text x="442" y="360" text-anchor="middle" class="y lbl">2</text>
+    <text x="466" y="361" class="t s">Input validation · rate limiting · security headers (CSP)</text>
+    <rect x="415" y="390" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
+    <circle cx="442" cy="415" r="14" fill="#0B0B0C"/><text x="442" y="420" text-anchor="middle" class="y lbl">2</text>
+    <text x="466" y="421" class="t s">Layer 1: Rule engine (Indian scam patterns) + indicator extraction</text>
+    <rect x="415" y="450" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
+    <text x="435" y="481" class="t s">Layer 2: Grok client · strict JSON schema · model fallback</text>
+    <rect x="415" y="510" width="700" height="50" rx="10" fill="#fff" stroke="#0B0B0C" stroke-width="1.5"/>
+    <circle cx="442" cy="535" r="14" fill="#0B0B0C"/><text x="442" y="540" text-anchor="middle" class="y lbl">5</text>
+    <text x="466" y="541" class="t s">Validate JSON · merge with rule check · offline fallback</text>
+  </g>
+
+  <!-- Supporting GCP services -->
+  <rect x="390" y="640" width="235" height="120" rx="14" fill="#fff" stroke="#0B0B0C" stroke-width="2"/>
+  <text x="410" y="676" class="t s">Environment Variables</text>
+  <text x="410" y="702" class="m x">XAI_API_KEY (encrypted,</text>
+  <text x="410" y="724" class="m x">sensitive) read at runtime</text>
+  <rect x="648" y="640" width="235" height="120" rx="14" fill="#fff" stroke="#0B0B0C" stroke-width="2"/>
+  <text x="668" y="676" class="t s">Vercel Runtime Logs</text>
+  <text x="668" y="702" class="m x">Structured JSON logs:</text>
+  <text x="668" y="724" class="m x">verdict, latency, engine</text>
+  <rect x="905" y="640" width="235" height="120" rx="14" fill="#fff" stroke="#0B0B0C" stroke-width="2"/>
+  <text x="925" y="676" class="t s">GitHub + Vercel CLI</text>
+  <text x="925" y="698" class="t s">(vercel deploy --prod)</text>
+  <text x="925" y="724" class="m x">Tests, builds, deploys</text>
+  <path d="M507 640V584" class="arrow"/>
+  <path d="M765 584V640" class="arrow"/>
+  <path d="M1022 640V584" class="arrow"/>
+
+  <!-- xAI Grok -->
+  <rect x="1300" y="190" width="320" height="330" rx="16" fill="#0B0B0C"/>
+  <text x="1322" y="232" class="y h">xAI Grok API</text>
+  <text x="1322" y="258" class="w x">api.x.ai · Bearer API key</text>
+  <rect x="1322" y="276" width="276" height="1" fill="#3A3A40"/>
+  <text x="1322" y="306" class="w x">• Model: grok-4.20 (non-reasoning)</text>
+  <text x="1322" y="334" class="w x">• Vision: text + screenshot</text>
+  <text x="1322" y="362" class="w x">• System prompt with Indian</text>
+  <text x="1336" y="384" class="w x">scam / digital-arrest knowledge</text>
+  <text x="1322" y="412" class="w x">• Structured JSON output</text>
+  <text x="1336" y="434" class="w x">(json_schema, strict)</text>
+  <text x="1322" y="462" class="w x">• Replies in EN / HI / KN</text>
+  <text x="1322" y="500" class="y lbl">AI processing happens here</text>
+
+  <!-- Helplines -->
+  <rect x="1300" y="600" width="320" height="160" rx="16" fill="#EDEDED" stroke="#0B0B0C" stroke-width="2"/>
+  <text x="1322" y="638" class="t s">Official reporting channels</text>
+  <text x="1322" y="668" class="t x">• 1930 National Cyber Crime Helpline</text>
+  <text x="1322" y="694" class="t x">• cybercrime.gov.in</text>
+  <text x="1322" y="720" class="t x">• Sanchar Saathi (Chakshu)</text>
+  <text x="1322" y="744" class="m x">Linked from every result</text>
+
+  <!-- Main flow arrows -->
+  <path d="M290 290H386" class="arrow"/>
+  <circle cx="338" cy="266" r="14" fill="#0B0B0C"/><text x="338" y="271" text-anchor="middle" class="y lbl">1</text>
+  <text x="296" y="316" class="t" font-size="12" font-weight="600">HTTPS</text>
+
+  <path d="M1140 330H1296" class="arrow"/>
+  <circle cx="1240" cy="306" r="14" fill="#0B0B0C"/><text x="1240" y="311" text-anchor="middle" class="y lbl">3</text>
+  <text x="1196" y="352" class="t" font-size="12" font-weight="600">prompt + data</text>
+
+  <path d="M1300 450H1144" class="arrow"/>
+  <circle cx="1240" cy="426" r="14" fill="#0B0B0C"/><text x="1240" y="431" text-anchor="middle" class="y lbl">4</text>
+  <text x="1200" y="472" class="t" font-size="12" font-weight="600">JSON verdict</text>
+
+  <path d="M390 540H294" class="arrow"/>
+  <circle cx="340" cy="516" r="14" fill="#0B0B0C"/><text x="340" y="521" text-anchor="middle" class="y lbl">6</text>
+  <text x="300" y="562" class="t" font-size="12" font-weight="600">result</text>
+
+  <path d="M1460 520V596" class="arrow" stroke-dasharray="6 5"/>
+
+  <!-- Legend -->
+  <text x="40" y="826" class="t lbl">Flow:</text>
+  <text x="92" y="826" class="t x">1 User submits text / screenshot  →  2 Vercel Function validates + rule check  →  3 Grok analyses  →  4 Structured JSON returned  →  5 Validated &amp; merged  →  6 Result + safety advice shown</text>
+</svg>
